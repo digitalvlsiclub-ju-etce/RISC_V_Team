@@ -1,0 +1,112 @@
+`timescale 1ns/1ps
+`include "rv_isa.vh"
+
+module instDecode #(
+    parameter ADDR_WIDTH = 11,   // 2048 words
+    parameter DATA_WIDTH = 32
+)(
+    input clk,
+    input rst_n,
+    
+    input [DATA_WIDTH-1:0] inst_in,
+    input inst_valid
+);
+
+wire [6:0] inst_opcode_c = inst_in[6:0];
+wire [4:0] inst_rd_c     = inst_in [11:7];
+wire [2:0] inst_func3_c  = inst_in[14:12];
+wire [4:0] inst_rs1_c    = inst_in [19:15];
+wire [4:0] inst_rs2_c    = inst_in[24:20];
+wire [6:0] inst_func7_c  = inst_in [31:25];
+
+// func7 decoding
+wire func7_base_1 = (inst_func7_c == 7'b0000000);
+wire func7_base_2 = (inst_func7_c == 7'b0100000);
+wire func7_mul    = (inst_func7_c == 7'b0000001);
+
+
+wire  opcode_op_imm_c   = inst_valid & (inst_opcode_c == `OPC_OP_IMM);
+wire  opcode_op_reg_c   = inst_valid & (inst_opcode_c == `OPC_OP_REG);
+wire  opcode_op_ld_c    = inst_valid & (inst_opcode_c == `OPC_OP_LOAD);
+wire  opcode_op_st_c    = inst_valid & (inst_opcode_c == `OPC_OP_STORE);
+wire  opcode_op_br_c    = inst_valid & (inst_opcode_c == `OPC_OP_BRANCH);
+wire  opcode_op_auipc_c = inst_valid & (inst_opcode_c == `OPC_OP_AUIPC);
+wire  opcode_op_lui_c   = inst_valid & (inst_opcode_c == `OPC_OP_LUI);
+wire  opcode_op_jal_c   = inst_valid & (inst_opcode_c == `OPC_OP_JAL);
+wire  opcode_op_jalr_c  = inst_valid & (inst_opcode_c == `OPC_OP_JALR);
+
+wire  op_jump_c = opcode_op_jal_c ||opcode_op_jalr_c ;
+
+wire [2:0] op_funct3_c = inst_in[14:12];
+
+// op_funct3_c decoding
+wire op_add_c   = (op_funct3_c == OP_FUNCT3_ADD);
+wire op_sub_c   = (op_funct3_c == OP_FUNCT3_ADD) & func7_base_2;
+wire op_sll_c   = (op_funct3_c == OP_FUNCT3_SLL);
+wire op_slt_c   = (op_funct3_c == OP_FUNCT3_SLT);
+wire op_sltu_c  = (op_funct3_c == OP_FUNCT3_SLTU);
+wire op_xor_c   = (op_funct3_c == OP_FUNCT3_XOR);
+wire op_or_c    = (op_funct3_c == OP_FUNCT3_OR);
+wire op_srl_c   =  (op_funct3_c == OP_FUNCT3_SRL) & func7_base_1;
+wire op_sra_c   =  (op_funct3_c == OP_FUNCT3_SRL) & func7_base_2;
+wire op_and_c   = (op_funct3_c == OP_FUNCT3_AND);
+
+// immediate alu instructions
+wire op_imm_addi_c  = opcode_op_imm_c & op_add_c;
+wire op_imm_slli_c  = opcode_op_imm_c & op_sll_c;
+wire op_imm_slti_c  = opcode_op_imm_c & op_slt_c;
+wire op_imm_sltiu_c = opcode_op_imm_c & op_sltu_c;
+wire op_imm_xori_c  = opcode_op_imm_c & op_xor_c;
+wire op_imm_ori_c   = opcode_op_imm_c & op_or_c;
+wire op_imm_srli_c  = opcode_op_imm_c & op_srl_c;
+wire op_imm_srai_c  = opcode_op_imm_c & op_sra_c;
+wire op_imm_andi_c  = opcode_op_imm_c & op_and_c;
+wire op_imm_c       = op_reg_addi_c ||op_reg_slli_c || op_reg_slti_c || op_reg_sltiu_c || op_reg_xori_c || op_reg_ori_c  || op_reg_srli_c || op_reg_srai_c || op_reg_andi_c;
+
+// register alu instructions
+wire op_reg_add_c  = opcode_op_reg_c & op_add_c;
+wire op_reg_sub_c  = opcode_op_reg_c & op_sub_c;
+wire op_reg_sll_c  = opcode_op_reg_c & op_sll_c;
+wire op_reg_slt_c  = opcode_op_reg_c & op_slt_c;
+wire op_reg_sltu_c = opcode_op_reg_c & op_sltu_c;
+wire op_reg_xor_c  = opcode_op_reg_c & op_xor_c;
+wire op_reg_or_c   = opcode_op_reg_c & op_or_c;
+wire op_reg_srl_c  = opcode_op_reg_c & op_srl_c;
+wire op_reg_sra_c  = opcode_op_reg_c & op_sra_c;
+wire op_reg_and_c  = opcode_op_reg_c & op_and_c;
+wire op_reg_c      = op_reg_add_c || op_reg_sub_c || op_reg_sll_c || op_reg_slt_c || op_reg_sltu_c || op_reg_xor_c || op_reg_or_c  || op_reg_srl_c || op_reg_sra_c || op_reg_and_c;
+
+
+// load instructions
+wire op_ld_lb_c  = opcode_op_ld_c & (op_funct3_c == OP_FUNCT3_LB);
+wire op_ld_lh_c  = opcode_op_ld_c & (op_funct3_c == OP_FUNCT3_LH);
+wire op_ld_lw_c  = opcode_op_ld_c & (op_funct3_c == OP_FUNCT3_LW);
+wire op_ld_lbu_c = opcode_op_ld_c & (op_funct3_c == OP_FUNCT3_LBU);
+wire op_ld_lhu_c = opcode_op_ld_c & (op_funct3_c == OP_FUNCT3_LHU);
+wire op_ld_c     = op_ld_lb_c || op_ld_lh_c || op_ld_lw_c || op_ld_lbu_c || op_ld_lhu_c ;
+
+
+// store instructions
+wire op_st_sb_c = opcode_op_st_c & (op_funct3_c == OP_FUNCT3_SB);
+wire op_st_sh_c = opcode_op_st_c & (op_funct3_c == OP_FUNCT3_SH);
+wire op_st_sw_c = opcode_op_st_c & (op_funct3_c == OP_FUNCT3_SW);
+wire op_st_c    = op_st_sb_c || op_st_sh_c || op_st_sw_c ; 
+
+// branch instructions
+wire op_br_beq_c  = opcode_op_br_c & (op_funct3_c == OP_FUNCT3_BEQ);
+wire op_br_bne_c  = opcode_op_br_c & (op_funct3_c == OP_FUNCT3_BNE);
+wire op_br_blt_c  = opcode_op_br_c & (op_funct3_c == OP_FUNCT3_BLT);
+wire op_br_bge_c  = opcode_op_br_c & (op_funct3_c == OP_FUNCT3_BGE);
+wire op_br_bltu_c = opcode_op_br_c & (op_funct3_c == OP_FUNCT3_BLTU);
+wire op_br_bgeu_c = opcode_op_br_c & (op_funct3_c == OP_FUNCT3_BGEU);
+wire op_br_c      = op_br_beq_c || op_br_bne_c || op_br_blt_c || op_br_bge_c || op_br_bltu_c || op_br_bgeu_c ;
+
+
+// immediate formatting
+wire[31:0] id_imm_i_type_c = { {21{inst_in[31]}},inst_in[30:20]}; 
+wire[31:0] id_imm_s_type_c = { {21{inst_in[31]}},inst_in[30:25],inst_in[11:7]}; 
+wire[31:0] id_imm_b_type_c = { {20{inst_in[31]}},inst_in[7],inst_in[30:25],inst_in[11:8],1'b0}; 
+wire[31:0] id_imm_u_type_c = { inst_in[31:12],12'b0}; 
+wire[31:0] id_imm_j_type_c = { {12{inst_in[31]}},inst_in[19:12],inst_in[20],inst_in[30:21],1'b0}; 
+
+endmodule
