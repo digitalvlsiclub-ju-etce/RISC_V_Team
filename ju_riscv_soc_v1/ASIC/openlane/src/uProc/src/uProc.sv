@@ -61,19 +61,32 @@ instFetch #(
     .imem_rd_addr(pc)
 );
 
+reg [PC_WIDTH-1 : 0] pc_d1;
+wire [PC_WIDTH-1 : 0] pc_to_id;
+
+always @(posedge clk) begin
+    if(imem_rd)begin
+        pc_d1 <= pc;
+    end
+end
+assign pc_to_id = pc_d1;
+
 instDecode #(
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH)
 ) u_instDecode (
     .clk(clk),
     .rst_n(rst_n),
+    .id_stall(1'b0),
     
     .inst_in(imem_rd_data),
-    .inst_valid(imem_rd_data_valid)
+    .inst_valid(imem_rd_data_valid),
+    .pc_in(pc_to_id),
+
+    .gpr_we(1'b0),
+    .gpr_waddr(5'h00),
+    .gpr_wdata(32'h00000000)
 );
-
-
-
 
 // instantiate ccm_controller as u_iccm_cntlr
 

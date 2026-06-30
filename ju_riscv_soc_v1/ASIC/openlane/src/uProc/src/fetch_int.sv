@@ -42,11 +42,11 @@ module fetch_int #(
     wire [ADDR_WIDTH-1:0]bist_cntlr_waddr;
     wire [DATA_WIDTH-1:0]bist_cntlr_wr_data;
     
-    iccm_bist #(
+    ccm_bist #(
     .ADDR_WIDTH(11),
     .DATA_WIDTH(32),
     .NUM_ROWS(2048)
-)   u_iccm_bist(
+)   u_ccm_bist(
     .clk(clk),
     .rst_n(rst_n),
     .bist_en(bist_en),
@@ -65,7 +65,7 @@ module fetch_int #(
 
     //instantiate pc_module & ccm_controller
 
-    pc_block pc_uut (
+    pc u_pc (
         .clk(clk), 
         .rst_n(rst_n),
         .pc_en(1'b1),
@@ -82,7 +82,7 @@ module fetch_int #(
     wire [ADDR_WIDTH-1:0]mux_cntlr_waddr = bist_en ? bist_cntlr_waddr : cntlr_waddr;
     wire [DATA_WIDTH-1:0]mux_cntlr_wr_data = bist_en ? bist_cntlr_wr_data : cntlr_wr_data;
     
-    ccm_controller ccm_uut (
+    ccm_controller u_ccm_controller (
         .clk(clk),
         .rst_n(rst_n),
 

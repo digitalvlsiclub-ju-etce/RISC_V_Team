@@ -9,7 +9,7 @@
         reg [31:0] dob;
 
     initial begin
-        $readmemh("program.hex", ram ,0,17);
+        $readmemh("src/program.hex", ram ,0,17);
     end
         always @(posedge clka)begin
             if (ena)begin
