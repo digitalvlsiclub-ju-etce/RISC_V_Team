@@ -16,9 +16,26 @@ module instDecode #(
     input [PC_WIDTH-1:0] pc_in,
 
     //gpr write port
-  input gpr_we,
-  input [4:0]gpr_waddr,
-  input [31:0] gpr_wdata
+    input gpr_we,
+    input [4:0]gpr_waddr,
+    input [31:0] gpr_wdata,
+
+    //decoder output stage
+    output [PC_WIDTH-1:0]     pc_out,
+    output [DATA_WIDTH-1:0]   id_alu_operand_1_out,
+    output [DATA_WIDTH-1:0]   id_alu_operand_2_out,
+    output [4:0]              inst_rd_out,
+    output [3:0]              id_alu_funct_out,
+    output [2:0]              id_branch_type_out ,
+    output                    op_ld_out ,
+    output                    op_ldu_out , // unsigned load
+    output [1:0]              op_ld_sz_out, // load size
+    output                    op_st_out ,
+    output [1:0]              op_st_sz_out, // store size
+    output                    op_br_out ,
+    output                    op_reg_out ,
+    output                    op_imm_out ,
+    output                    opcode_op_jalr_out 
 );
 
 wire [6:0] inst_opcode_c = inst_in[6:0];
