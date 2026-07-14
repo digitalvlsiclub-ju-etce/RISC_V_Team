@@ -20,22 +20,22 @@ module instDecode #(
     input [4:0]gpr_waddr,
     input [31:0] gpr_wdata,
 
-    //decoder output stage
-    output [PC_WIDTH-1:0]     pc_out,
-    output [DATA_WIDTH-1:0]   id_alu_operand_1_out,
-    output [DATA_WIDTH-1:0]   id_alu_operand_2_out,
-    output [4:0]              inst_rd_out,
-    output [3:0]              id_alu_funct_out,
-    output [2:0]              id_branch_type_out ,
-    output                    op_ld_out ,
-    output                    op_ldu_out , // unsigned load
-    output [1:0]              op_ld_sz_out, // load size
-    output                    op_st_out ,
-    output [1:0]              op_st_sz_out, // store size
-    output                    op_br_out ,
-    output                    op_reg_out ,
-    output                    op_imm_out ,
-    output                    opcode_op_jalr_out 
+    //decoder output stage 
+    output reg[PC_WIDTH-1:0]     pc_out,
+    output reg[DATA_WIDTH-1:0]   id_alu_operand_1_out,
+    output reg[DATA_WIDTH-1:0]   id_alu_operand_2_out,
+    output reg[4:0]              inst_rd_out,
+    output reg[3:0]              id_alu_funct_out,
+    output reg[2:0]              id_branch_type_out ,
+    output reg                   op_ld_out ,
+    output reg                   op_ldu_out , // unsigned load
+    output reg[1:0]              op_ld_sz_out, // load size
+    output reg                   op_st_out ,
+    output reg[1:0]              op_st_sz_out, // store size
+    output reg                   op_br_out ,
+    output reg                   op_reg_out ,
+    output reg                   op_imm_out ,
+    output reg                   opcode_op_jalr_out 
 );
 
 wire [6:0] inst_opcode_c = inst_in[6:0];
@@ -271,22 +271,6 @@ always @(*) begin
 end
 
 //ID stage pipeline registers
-
-reg [PC_WIDTH-1:0]     pc_out;
-reg [DATA_WIDTH-1:0]   id_alu_operand_1_out;
-reg [DATA_WIDTH-1:0]   id_alu_operand_2_out;
-reg [4:0]              inst_rd_out ;
-reg [3:0]              id_alu_funct_out ;
-reg [2:0]              id_branch_type_out ;
-reg                    op_ld_out ;
-reg                    op_ldu_out ; // unsigned load
-reg [1:0]              op_ld_sz_out; // load size
-reg                    op_st_out ;
-reg [1:0]              op_st_sz_out; // store size
-reg                    op_br_out ;
-reg                    op_reg_out ;
-reg                    op_imm_out ;
-reg                    opcode_op_jalr_out ;
 
 
 
