@@ -16,6 +16,7 @@ module instExec #(
     input [PC_WIDTH-1:0]     pc_in,
     input [DATA_WIDTH-1:0]   id_alu_operand_1_in,
     input [DATA_WIDTH-1:0]   id_alu_operand_2_in,
+    input [DATA_WIDTH-1:0]   id_immediate_in,
     input [4:0]              inst_rd_in,
     input [3:0]              id_alu_funct_in,
     input [2:0]              id_branch_type_in ,
@@ -27,7 +28,10 @@ module instExec #(
     input                    op_br_in ,
     input                    op_reg_in ,
     input                    op_imm_in ,
-    input                    opcode_op_jalr_in 
+    input                    opcode_op_jalr_in, 
+    input                    opcode_op_jal_in,
+    input                    opcode_op_auipc_in,
+    input                    opcode_op_lui_in 
 );
 //ALU:addition and substraction (using a full adder)
 //when full adder is used for subtraction, carry_out  = ~borrow_out (c_out=1 means A>B, c_out=0 means A<B)
@@ -139,7 +143,7 @@ reg [DATA_WIDTH-1:0] alu_result_out_c ;
 always @(*) begin
     case (id_alu_funct_in)
         
-        `ALU_ADD   : alu_result_out_c = 32'b0; //left to incorporate
+        `ALU_ADD   : alu_result_out_c = opcode_op_jalr_in ? {adder_out_c[31:1],1'b0} : adder_out_c ;
         `ALU_SUB   : alu_result_out_c = adder_out_c ;
         `ALU_SLL   : alu_result_out_c = sll_result_c ;
         `ALU_SLT   : alu_result_out_c = slt_result_c ;

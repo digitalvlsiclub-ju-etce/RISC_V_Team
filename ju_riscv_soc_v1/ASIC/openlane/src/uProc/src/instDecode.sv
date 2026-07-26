@@ -24,6 +24,7 @@ module instDecode #(
     output reg[PC_WIDTH-1:0]     pc_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_1_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_2_out,
+    output reg[DATA_WIDTH-1:0]   id_immediate_out,
     output reg[4:0]              inst_rd_out,
     output reg[3:0]              id_alu_funct_out,
     output reg[2:0]              id_branch_type_out ,
@@ -35,7 +36,11 @@ module instDecode #(
     output reg                   op_br_out ,
     output reg                   op_reg_out ,
     output reg                   op_imm_out ,
-    output reg                   opcode_op_jalr_out 
+    output reg                   opcode_op_jalr_out,
+    output reg                   opcode_op_jal_out,
+    output reg                   opcode_op_auipc_out,
+    output reg                   opcode_op_lui_out
+
 );
 
 wire [6:0] inst_opcode_c = inst_in[6:0];
@@ -140,7 +145,7 @@ wire[31:0] id_imm_j_type_c = { {12{inst_in[31]}},inst_in[19:12],inst_in[20],inst
 reg [3:0] id_alu_funct_out_c ;
 always @(*) begin
    id_alu_funct_out_c = op_add_c ;
-   if (op_imm_addi_c || op_reg_add_c || opcode_op_auipc_c || op_jump_c|| op_br_c || op_ld_c || op_st_c) begin
+   if (op_imm_addi_c || op_reg_add_c || opcode_op_auipc_c || opcode_op_lui_c || op_jump_c || op_br_c || op_ld_c || op_st_c) begin
      id_alu_funct_out_c = `ALU_ADD ;   
    end
    else if (op_reg_sub_c) begin
@@ -280,6 +285,7 @@ always @(posedge clk) begin
     pc_out               <= 'b0;
     id_alu_operand_1_out <= 'b0;
     id_alu_operand_2_out <= 'b0;
+    id_immediate_out     <= 'b0;
     inst_rd_out          <= 'b0;
     id_alu_funct_out     <= 'b0;
     id_branch_type_out   <= 'b0;
@@ -292,11 +298,15 @@ always @(posedge clk) begin
     op_reg_out           <= 'b0;
     op_imm_out           <= 'b0;
     opcode_op_jalr_out   <= 'b0;
+    opcode_op_jal_out    <= 'b0;
+    opcode_op_auipc_out    <= 'b0;
+    opcode_op_lui_out    <= 'b0;
   end
   else if (!id_stall) begin
     pc_out               <= pc_in;
     id_alu_operand_1_out <= id_alu_operand_1_out_c;
     id_alu_operand_2_out <= id_alu_operand_2_out_c;
+    id_immediate_out     <= id_immediate_out_c;
     inst_rd_out          <= inst_rd_c;
     id_alu_funct_out     <= id_alu_funct_out_c;
     id_branch_type_out   <= id_branch_type_out_c;
@@ -309,6 +319,9 @@ always @(posedge clk) begin
     op_reg_out           <= op_reg_c;
     op_imm_out           <= op_imm_c;
     opcode_op_jalr_out   <= opcode_op_jalr_c;
+    opcode_op_jal_out    <= opcode_op_jal_c;
+    opcode_op_auipc_out  <= opcode_op_auipc_c;
+    opcode_op_lui_out    <= opcode_op_lui_c;
  end
 end
 

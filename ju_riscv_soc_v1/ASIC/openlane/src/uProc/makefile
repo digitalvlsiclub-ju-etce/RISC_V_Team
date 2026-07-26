@@ -29,7 +29,7 @@ prep:
 compile: prep $(SOURCES)
 	@echo "Compiling Verilog sources from $(SRC_DIR)/..."
 	@echo "Compiling  $(SOURCES)/..."
-	$(VERILOG_COMPILER) -g2012 -I $(SRC_DIR) -o $(OUTPUT_EXE) $(SOURCES)
+	$(VERILOG_COMPILER) -g2012 -Wall -I $(SRC_DIR) -o $(OUTPUT_EXE) $(SOURCES)
 
 
 sim: compile
