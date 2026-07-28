@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module gpr (
     input clk,
     input reset,

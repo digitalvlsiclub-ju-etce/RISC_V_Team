@@ -208,7 +208,7 @@ always @(posedge clk) begin
     exec_op_st_out      <= 'b0;
     exec_op_st_sz_out   <= 'b0; 
   end
-  else if (!id_stall) begin
+  else if (!exec_stall) begin
     exec_rd_out         <= inst_rd_in;
     exec_alu_result_out <= exec_alu_result_out_c;
     exec_store_data_out <= id_store_data_in;

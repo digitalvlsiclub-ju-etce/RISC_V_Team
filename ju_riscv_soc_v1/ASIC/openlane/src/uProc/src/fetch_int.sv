@@ -86,6 +86,10 @@ module fetch_int #(
         .clk(clk),
         .rst_n(rst_n),
 
+        .bist_en(bist_en),
+        .bist_pass(bist_pass),
+        .bist_fail(bist_fail),
+        
         .cntlr_rd(mux_cntlr_rd),
         .cntlr_raddr(mux_cntlr_raddr), // address coming from pc
         .cntlr_rd_data(cntlr_rd_data),

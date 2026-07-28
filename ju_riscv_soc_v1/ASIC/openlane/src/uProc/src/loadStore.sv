@@ -14,9 +14,6 @@ module loadStore #(
 
     //input from execution stage
 
-
-    input  [PC_WIDTH-1:0]   exec_target_addr_in,    // unregistered 
-    input                   exec_load_target_addr_in, // unregistered 
     input  [4:0]            exec_rd_in, 
     input  [DATA_WIDTH-1:0] exec_alu_result_in,
     input  [DATA_WIDTH-1:0] exec_store_data_in, 

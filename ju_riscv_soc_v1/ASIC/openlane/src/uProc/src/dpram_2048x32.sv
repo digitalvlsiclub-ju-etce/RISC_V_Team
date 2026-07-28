@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
     // Simple Dual-Port Block RAM with Two Clocks
     // File: simple_dual_two_clocks.v
     module dpram_2048x32 (clka,clkb,ena,enb,wea,addra,addrb,dia,dob);
