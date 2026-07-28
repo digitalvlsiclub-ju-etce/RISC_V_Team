@@ -12,6 +12,8 @@
 `define ALU_SRL   7
 `define ALU_SRA   8
 `define ALU_AND   9
+`define ALU_AUIPC 10
+`define ALU_JUMP  11
 
 `define BR_BEQ  1
 `define BR_BNE  2

@@ -24,6 +24,7 @@ module instDecode #(
     output reg[PC_WIDTH-1:0]     pc_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_1_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_2_out,
+    output reg[DATA_WIDTH-1:0]   id_store_data_out,
     output reg[DATA_WIDTH-1:0]   id_immediate_out,
     output reg[4:0]              inst_rd_out,
     output reg[3:0]              id_alu_funct_out,
@@ -172,8 +173,14 @@ always @(*) begin
    else if (op_imm_srai_c|| op_reg_sra_c) begin
     id_alu_funct_out_c = `ALU_SRA  ; 
    end
-    else if (op_imm_andi_c|| op_reg_and_c) begin
+   else if (op_imm_andi_c|| op_reg_and_c) begin
     id_alu_funct_out_c = `ALU_AND  ; 
+   end
+   else if (opcode_op_auipc_c) begin
+    id_alu_funct_out_c = `ALU_AUIPC  ; 
+   end
+   else if (op_jump_c) begin
+    id_alu_funct_out_c = `ALU_JUMP  ; 
    end
 end
 
@@ -277,14 +284,12 @@ end
 
 //ID stage pipeline registers
 
-
-
-
 always @(posedge clk) begin
   if(rst_n)begin
     pc_out               <= 'b0;
     id_alu_operand_1_out <= 'b0;
     id_alu_operand_2_out <= 'b0;
+    id_store_data_out    <= 'b0;
     id_immediate_out     <= 'b0;
     inst_rd_out          <= 'b0;
     id_alu_funct_out     <= 'b0;
@@ -299,13 +304,14 @@ always @(posedge clk) begin
     op_imm_out           <= 'b0;
     opcode_op_jalr_out   <= 'b0;
     opcode_op_jal_out    <= 'b0;
-    opcode_op_auipc_out    <= 'b0;
+    opcode_op_auipc_out  <= 'b0;
     opcode_op_lui_out    <= 'b0;
   end
   else if (!id_stall) begin
     pc_out               <= pc_in;
     id_alu_operand_1_out <= id_alu_operand_1_out_c;
     id_alu_operand_2_out <= id_alu_operand_2_out_c;
+    id_store_data_out    <= sr2_data_c;
     id_immediate_out     <= id_immediate_out_c;
     inst_rd_out          <= inst_rd_c;
     id_alu_funct_out     <= id_alu_funct_out_c;

@@ -16,6 +16,7 @@ module instExec #(
     input [PC_WIDTH-1:0]     pc_in,
     input [DATA_WIDTH-1:0]   id_alu_operand_1_in,
     input [DATA_WIDTH-1:0]   id_alu_operand_2_in,
+    input [DATA_WIDTH-1:0]   id_store_data_in,
     input [DATA_WIDTH-1:0]   id_immediate_in,
     input [4:0]              inst_rd_in,
     input [3:0]              id_alu_funct_in,
@@ -31,7 +32,18 @@ module instExec #(
     input                    opcode_op_jalr_in, 
     input                    opcode_op_jal_in,
     input                    opcode_op_auipc_in,
-    input                    opcode_op_lui_in 
+    input                    opcode_op_lui_in,
+
+    output     [PC_WIDTH-1:0]   exec_target_addr_out,    // unregistered 
+    output                      exec_load_target_addr_out, // unregistered 
+    output reg [4:0]            exec_rd_out, 
+    output reg [DATA_WIDTH-1:0] exec_alu_result_out,
+    output reg [DATA_WIDTH-1:0] exec_store_data_out, 
+    output reg                  exec_op_ld_out ,
+    output reg                  exec_op_ldu_out , // unsigned load
+    output reg [1:0]            exec_op_ld_sz_out, // load size
+    output reg                  exec_op_st_out ,
+    output reg [1:0]            exec_op_st_sz_out   
 );
 //ALU:addition and substraction (using a full adder)
 //when full adder is used for subtraction, carry_out  = ~borrow_out (c_out=1 means A>B, c_out=0 means A<B)
@@ -89,6 +101,7 @@ wire [DATA_WIDTH-1:0] adder_in_B_c = (
 
 //using full adder to perform subtraction (operand2 is negetive)
 assign {adder_carry_out_c, adder_out_c} = adder_in_A_c + adder_in_B_c ;
+wire adder_out_zero_c = (adder_out_c == 'd0);
 
 wire sltu_result_c = ~adder_carry_out_c ;
 reg slt_result_c ;
@@ -139,28 +152,73 @@ wire [DATA_WIDTH-1:0] right_shift_arith_stage5_c = shift_amount_c[4] ? { {16{op1
 wire [DATA_WIDTH-1:0] sra_result_c = right_shift_arith_stage5_c ;
 
 //All ALU operation results are muxed here as per the instruction
-reg [DATA_WIDTH-1:0] alu_result_out_c ;
+reg [DATA_WIDTH-1:0] exec_alu_result_out_c ;
 always @(*) begin
     case (id_alu_funct_in)
         
-        `ALU_ADD   : alu_result_out_c = opcode_op_jalr_in ? {adder_out_c[31:1],1'b0} : adder_out_c ;
-        `ALU_SUB   : alu_result_out_c = adder_out_c ;
-        `ALU_SLL   : alu_result_out_c = sll_result_c ;
-        `ALU_SLT   : alu_result_out_c = slt_result_c ;
-        `ALU_SLTU  : alu_result_out_c = sltu_result_c ;
-        `ALU_XOR   : alu_result_out_c = id_alu_operand_1_in ^ id_alu_operand_2_in ;
-        `ALU_OR    : alu_result_out_c = id_alu_operand_1_in | id_alu_operand_2_in ;
-        `ALU_SRL   : alu_result_out_c = srl_result_c ;
-        `ALU_SRA   : alu_result_out_c = sra_result_c ;
-        `ALU_AND   : alu_result_out_c = id_alu_operand_1_in & id_alu_operand_2_in ;
-        default    : alu_result_out_c = 32'b0;
+        `ALU_ADD   : exec_alu_result_out_c = adder_out_c ;
+        `ALU_SUB   : exec_alu_result_out_c = adder_out_c ;
+        `ALU_SLL   : exec_alu_result_out_c = sll_result_c ;
+        `ALU_SLT   : exec_alu_result_out_c = slt_result_c ;
+        `ALU_SLTU  : exec_alu_result_out_c = sltu_result_c ;
+        `ALU_XOR   : exec_alu_result_out_c = id_alu_operand_1_in ^ id_alu_operand_2_in ;
+        `ALU_OR    : exec_alu_result_out_c = id_alu_operand_1_in | id_alu_operand_2_in ;
+        `ALU_SRL   : exec_alu_result_out_c = srl_result_c ;
+        `ALU_SRA   : exec_alu_result_out_c = sra_result_c ;
+        `ALU_AND   : exec_alu_result_out_c = id_alu_operand_1_in & id_alu_operand_2_in ;
+        `ALU_AUIPC : exec_alu_result_out_c = adder_out_c ; // pc + imm -> rd 
+        // for jal and jalr pc+4 is saved into rd
+        `ALU_JUMP  : exec_alu_result_out_c = pc_in + 'd4; 
+        default    : exec_alu_result_out_c = 32'b0;
     endcase
 end
 
+wire [DATA_WIDTH-1 : 0] temp_exec_target_addr = opcode_op_jalr_in ? {adder_out_c[31:1],1'b0} 
+                                             : ( pc_in + id_immediate_in );
 
+assign  exec_target_addr_out  = temp_exec_target_addr [PC_WIDTH-1 : 0];                             
 
+reg branch_true_c ;
+always @(*) begin
+    case (id_branch_type_in)
+        `BR_BEQ   : branch_true_c = adder_out_zero_c ;
+        `BR_BNE   : branch_true_c = ~adder_out_zero_c ; 
+        `BR_BLT   : branch_true_c = slt_result_c ; 
+        `BR_BGE   : branch_true_c = ~slt_result_c ; 
+        `BR_BLTU  : branch_true_c = sltu_result_c ; 
+        `BR_BGEU  : branch_true_c = ~sltu_result_c ; 
+        `BR_JMP   : branch_true_c = 1'b1 ; 
+        default   : branch_true_c = 1'b0;
+    endcase
+end
 
+// pc is loaded with target address under these conditions
+assign exec_load_target_addr_out = branch_true_c;
 
+//EX stage pipeline registers
+
+always @(posedge clk) begin
+  if(rst_n)begin
+    exec_rd_out         <= 'b0;
+    exec_alu_result_out <= 'b0;
+    exec_store_data_out <= 'b0;
+    exec_op_ld_out      <= 'b0;
+    exec_op_ldu_out     <= 'b0;
+    exec_op_ld_sz_out   <= 'b0;
+    exec_op_st_out      <= 'b0;
+    exec_op_st_sz_out   <= 'b0; 
+  end
+  else if (!id_stall) begin
+    exec_rd_out         <= inst_rd_in;
+    exec_alu_result_out <= exec_alu_result_out_c;
+    exec_store_data_out <= id_store_data_in;
+    exec_op_ld_out      <= op_ld_in;
+    exec_op_ldu_out     <= op_ldu_in;
+    exec_op_ld_sz_out   <= op_ld_sz_in;
+    exec_op_st_out      <= op_st_in;
+    exec_op_st_sz_out   <= op_st_sz_in; 
+ end
+end
 
 
 
