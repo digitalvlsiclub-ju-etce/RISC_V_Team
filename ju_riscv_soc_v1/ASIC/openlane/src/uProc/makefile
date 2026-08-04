@@ -9,7 +9,7 @@ OUT_DIR = compile
 
 # --- Files ---
 
-SOURCES = $(wildcard $(SRC_DIR)/*.v $(SRC_DIR)/*.sv) 
+SOURCES = $(wildcard $(SRC_DIR)/*.v $(SRC_DIR)/*.sv ) uProc_tb.sv 
 
 # All generated files are saved in compile folder
 OUTPUT_EXE = $(OUT_DIR)/sim.vvp

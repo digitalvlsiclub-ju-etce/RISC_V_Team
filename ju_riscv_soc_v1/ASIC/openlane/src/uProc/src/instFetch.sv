@@ -6,6 +6,8 @@ module instFetch #(
 )(
     input clk,
     input rst_n,
+
+    input id_stall,// from ID stage
     
     input bist_en,
     output bist_pass,

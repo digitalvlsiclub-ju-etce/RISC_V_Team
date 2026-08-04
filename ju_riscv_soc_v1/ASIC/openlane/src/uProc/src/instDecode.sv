@@ -9,18 +9,29 @@ module instDecode #(
 )(
     input clk,
     input rst_n,
-    input id_stall,
+    output id_stall,// to Fetch stage
+
+    input exec_stall,//from EXEC stage
+
     
     input [DATA_WIDTH-1:0] inst_in,
     input inst_valid,
     input [PC_WIDTH-1:0] pc_in,
 
+
+    //gpr read port
+    output [4:0]gpr_rs1_raddr,//unregistered
+    output [4:0]gpr_rs2_raddr,//unregistered
+    input [DATA_WIDTH-1:0] gpr_rs1_rdata,
+    input [DATA_WIDTH-1:0] gpr_rs2_rdata,
+
     //gpr write port
-    input gpr_we,
-    input [4:0]gpr_waddr,
-    input [31:0] gpr_wdata,
+   // input gpr_we,
+    //input [4:0]gpr_waddr,
+    //input [31:0] gpr_wdata,
 
     //decoder output stage 
+    output                       id_valid_out,//
     output reg[PC_WIDTH-1:0]     pc_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_1_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_2_out,
@@ -45,10 +56,11 @@ module instDecode #(
 );
 
 wire [6:0] inst_opcode_c = inst_in[6:0];
-wire [4:0] inst_rd_c     = inst_in [11:7];
+//rd is not used in case of branch and store instructions
+wire [4:0] inst_rd_c     = inst_in [11:7] & {5{~(op_br_c | op_st_c)}};
 wire [2:0] inst_func3_c  = inst_in[14:12];
-wire [4:0] inst_rs1_c    = inst_in [19:15];
-wire [4:0] inst_rs2_c    = inst_in[24:20];
+assign gpr_rs1_raddr     = inst_in [19:15];
+assign gpr_rs2_raddr     = inst_in[24:20];
 wire [6:0] inst_func7_c  = inst_in [31:25];
 
 // func7 decoding
@@ -234,27 +246,7 @@ always @(*) begin
    end
 end
 
-// register file instantiation
-wire [31:0]sr1_data_c; //read
-wire [31:0]sr2_data_c; //read
 
-gpr u_gpr(
-  .clk(clk),
-  .reset(rst_n),
-
-  //write port
-  .write(gpr_we),
-  .dr(gpr_waddr),
-  .wrData(gpr_wdata),
-
-  //rd port 1
-  .sr1(inst_rs1_c),
-  .rdData1(sr1_data_c),
-
-  //rd port 2
-  .sr2(inst_rs2_c),
-  .rdData2(sr2_data_c)
-);
 
 // selection of alu operand 1 :to do 
 
@@ -262,7 +254,7 @@ reg[31:0] id_alu_operand_1_out_c;
 always @(*) begin
   id_alu_operand_1_out_c = 32'b0;
   if (op_imm_c || op_reg_c || op_br_c || op_ld_c || op_st_c || opcode_op_jalr_c ) begin
-    id_alu_operand_1_out_c = sr1_data_c ;
+    id_alu_operand_1_out_c = gpr_rs1_rdata ;
   end
   else if (opcode_op_jal_c || opcode_op_auipc_c) begin
     id_alu_operand_1_out_c = pc_in;
@@ -275,7 +267,7 @@ reg [31:0] id_alu_operand_2_out_c;
 always @(*) begin
   id_alu_operand_2_out_c = 32'b0;
   if ( op_reg_c || op_br_c ) begin
-    id_alu_operand_2_out_c = sr2_data_c ;
+    id_alu_operand_2_out_c = gpr_rs2_rdata ;
   end
   else if ( op_imm_c || op_ld_c || op_st_c || op_jump_c || opcode_op_lui_c || opcode_op_auipc_c) begin
     id_alu_operand_2_out_c = id_immediate_out_c ;
@@ -311,7 +303,7 @@ always @(posedge clk) begin
     pc_out               <= pc_in;
     id_alu_operand_1_out <= id_alu_operand_1_out_c;
     id_alu_operand_2_out <= id_alu_operand_2_out_c;
-    id_store_data_out    <= sr2_data_c;
+    id_store_data_out    <= gpr_rs2_rdata;
     id_immediate_out     <= id_immediate_out_c;
     inst_rd_out          <= inst_rd_c;
     id_alu_funct_out     <= id_alu_funct_out_c;

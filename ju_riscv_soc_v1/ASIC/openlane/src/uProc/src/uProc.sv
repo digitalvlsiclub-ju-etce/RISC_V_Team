@@ -32,12 +32,22 @@ module uProc#(
     wire                  mem_wr;
     wire [ADDR_WIDTH-1:0] mem_wr_addr;
     wire [DATA_WIDTH-1:0] mem_wr_data;
+
+// InstDecode to gpr read port
+ //gpr read port
+    wire [4:0]gpr_rs1_raddr;//unregistered
+    wire [4:0]gpr_rs2_raddr;//unregistered
+    wire [DATA_WIDTH-1:0] gpr_rs1_rdata;
+    wire [DATA_WIDTH-1:0] gpr_rs2_rdata;
 //ccm_controller to instDecode
     wire [DATA_WIDTH-1:0] imem_rd_data; //current insruction
     wire                  imem_rd_data_valid;
-
+// Fetch to Decode stage connections
+    wire                   id_stall;
 
 // decode to execute stage connections
+    wire                   exec_stall;
+    wire                   id_valid;      
     wire [PC_WIDTH-1:0]    id_pc;
     wire [DATA_WIDTH-1:0]  id_alu_operand_1;
     wire [DATA_WIDTH-1:0]  id_alu_operand_2;
@@ -59,6 +69,8 @@ module uProc#(
     wire                   opcode_op_auipc;
     wire                   opcode_op_lui;
 // execute to mem stage connections
+    wire                  mem_stall;
+    wire                  exec_valid;
     wire [4:0]            exec_rd; 
     wire [DATA_WIDTH-1:0] exec_alu_result;
     wire [DATA_WIDTH-1:0] exec_store_data; 
@@ -67,6 +79,17 @@ module uProc#(
     wire  [1:0]           exec_op_ld_sz; // load size
     wire                  exec_op_st;
     wire  [1:0]           exec_op_st_sz;
+// mem to WB stage connections 
+    wire mem_valid_out; //input from mem stage is valid
+    wire [4:0]mem_rd_out; 
+    wire [DATA_WIDTH-1:0] mem_rd_data_out;
+// WB to gpr write port
+//gpr write port
+wire [4:0]gpr_rd_waddr;//unregistered
+wire[DATA_WIDTH-1:0] gpr_rd_wdata;//unregistered
+wire gpr_rd_we;//unregistered
+
+
 
 // instantiate instFetch
     
@@ -76,6 +99,8 @@ instFetch #(
 ) u_instFetch (
     .clk(clk),
     .rst_n(rst_n),
+
+    .id_stall(id_stall),
     
     .bist_en(bist_en),
     .bist_pass(bist_pass),
@@ -153,6 +178,26 @@ always @(posedge clk) begin
 end
 assign pc_to_id = pc_d1;
 
+gpr #(
+    .DATA_WIDTH(DATA_WIDTH)
+)u_gpr(
+  .clk(clk),
+  .reset(rst_n),
+
+  //write port
+  .write(gpr_rd_we),
+  .dr(gpr_rd_waddr),
+  .wrData(gpr_rd_wdata),
+
+  //rd port 1
+  .sr1(gpr_rs1_raddr),
+  .rdData1(gpr_rs1_rdata),
+
+  //rd port 2
+  .sr2(gpr_rs2_raddr),
+  .rdData2(gpr_rs2_rdata)
+);
+
 
 // instantiate instDecode
 
@@ -163,16 +208,23 @@ instDecode #(
 ) u_instDecode (
     .clk(clk),
     .rst_n(rst_n),
-    .id_stall(1'b0),
+    .id_stall(id_stall),// to Fetch stage
+
+    .exec_stall(exec_stall),// from EXEC stage 
+    
     
     .inst_in(imem_rd_data),
     .inst_valid(imem_rd_data_valid),
     .pc_in(pc_to_id),
 
-    .gpr_we(1'b0),
-    .gpr_waddr(5'h00),
-    .gpr_wdata(32'h00000000),
+     //gpr read port
+    .gpr_rs1_raddr(gpr_rs1_raddr),//unregistered
+    .gpr_rs2_raddr(gpr_rs2_raddr),//unregistered
+    .gpr_rs1_rdata(gpr_rs1_rdata),
+    .gpr_rs2_rdata(gpr_rs2_rdata),
 
+
+    .id_valid_out(id_valid),
     .pc_out(id_pc),
     .id_alu_operand_1_out(id_alu_operand_1),
     .id_alu_operand_2_out(id_alu_operand_2),
@@ -204,10 +256,12 @@ instExec #(
 ) u_instExec (
     .clk(clk),
     .rst_n(rst_n),
-    .exec_stall(1'b0),
+    .mem_stall(mem_stall),//from MEM stage
+    .exec_stall(exec_stall),//to ID stage
     
 
     //input from decoder
+    .id_valid_in(id_valid),
     .pc_in(id_pc),
     .id_alu_operand_1_in(id_alu_operand_1),
     .id_alu_operand_2_in(id_alu_operand_2),
@@ -229,6 +283,7 @@ instExec #(
     .opcode_op_auipc_in(opcode_op_auipc),
     .opcode_op_lui_in(opcode_op_lui),
 
+    .exec_valid_out(exec_valid),
     .exec_target_addr_out(target_addr_out),    // unregistered 
     .exec_load_target_addr_out(load_target_addr_out), // unregistered 
     .exec_rd_out(exec_rd), 
@@ -243,17 +298,18 @@ instExec #(
 
 
 
-loadStore #(
+instMem #(
     .ADDR_WIDTH(ADDR_WIDTH),   // 2048 words
     .DATA_WIDTH(DATA_WIDTH),
     .PC_WIDTH(PC_WIDTH)
-) u_loadStore (
+) u_instMem (
     .clk(clk),
     .rst_n(rst_n),
-    .mem_stall(1'b0),
+    .mem_stall(mem_stall),// to EXEC stage
     
 //input from execution stage
 
+    .exec_valid_in(exec_valid),
     .exec_rd_in(exec_rd), 
     .exec_alu_result_in(exec_alu_result),
     .exec_store_data_in(exec_store_data), 
@@ -261,7 +317,33 @@ loadStore #(
     .exec_op_ldu_in(exec_op_ldu) , // unsigned load
     .exec_op_ld_sz_in(exec_op_ld_sz), // load size
     .exec_op_st_in(exec_op_st) ,
-    .exec_op_st_sz_in(exec_op_st_sz)   
+    .exec_op_st_sz_in(exec_op_st_sz),
+
+//output to WB stage 
+    .mem_valid_out(mem_valid_out), //input from mem stage is valid
+    .mem_rd_out(mem_rd_out), 
+    .mem_rd_data_out(mem_rd_data_out)   
+  
+);
+
+instWB #(
+    .ADDR_WIDTH(ADDR_WIDTH),   // 2048 words
+    .DATA_WIDTH(DATA_WIDTH),
+    .PC_WIDTH(PC_WIDTH)
+) u_instWB(
+    .clk(clk),
+    .rst_n(rst_n),
+
+    //input from mem stage
+    .mem_valid_in(mem_valid_out), //input from mem stage is valid
+    .mem_rd_in(mem_rd_out), 
+    .mem_rd_data_in(mem_rd_data_out), 
+
+    //gpr write port
+    .gpr_rd_waddr(gpr_rd_waddr),//unregistered
+    .gpr_rd_wdata(gpr_rd_wdata),//unregistered
+    .gpr_rd_we(gpr_rd_we)//unregistered
+    
 );
 
 

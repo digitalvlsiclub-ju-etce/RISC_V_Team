@@ -9,10 +9,12 @@ module instExec #(
 )(
     input clk,
     input rst_n,
-    input exec_stall,
+    input mem_stall,//from MEM stage
     
+    output exec_stall,//to ID stage
 
     //input from decoder
+    input                    id_valid_in,// inputs from ID stage are valid
     input [PC_WIDTH-1:0]     pc_in,
     input [DATA_WIDTH-1:0]   id_alu_operand_1_in,
     input [DATA_WIDTH-1:0]   id_alu_operand_2_in,
@@ -34,6 +36,7 @@ module instExec #(
     input                    opcode_op_auipc_in,
     input                    opcode_op_lui_in,
 
+    output                      exec_valid_out,
     output     [PC_WIDTH-1:0]   exec_target_addr_out,    // unregistered 
     output                      exec_load_target_addr_out, // unregistered 
     output reg [4:0]            exec_rd_out, 
@@ -45,6 +48,9 @@ module instExec #(
     output reg                  exec_op_st_out ,
     output reg [1:0]            exec_op_st_sz_out   
 );
+
+assign exec_stall = 1'b0;
+
 //ALU:addition and substraction (using a full adder)
 //when full adder is used for subtraction, carry_out  = ~borrow_out (c_out=1 means A>B, c_out=0 means A<B)
 
