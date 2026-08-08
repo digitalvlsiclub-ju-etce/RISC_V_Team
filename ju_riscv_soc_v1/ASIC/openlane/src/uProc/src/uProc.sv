@@ -35,39 +35,39 @@ module uProc#(
 
 // InstDecode to gpr read port
  //gpr read port
-    wire [4:0]gpr_rs1_raddr;//unregistered
-    wire [4:0]gpr_rs2_raddr;//unregistered
+    wire [4:0]            gpr_rs1_raddr;//unregistered
+    wire [4:0]            gpr_rs2_raddr;//unregistered
     wire [DATA_WIDTH-1:0] gpr_rs1_rdata;
     wire [DATA_WIDTH-1:0] gpr_rs2_rdata;
 //ccm_controller to instDecode
     wire [DATA_WIDTH-1:0] imem_rd_data; //current insruction
     wire                  imem_rd_data_valid;
 // Fetch to Decode stage connections
-    wire                   id_stall;
+    wire                  id_stall;
 
 // decode to execute stage connections
-    wire                   exec_stall;
-    wire                   id_valid;      
-    wire [PC_WIDTH-1:0]    id_pc;
-    wire [DATA_WIDTH-1:0]  id_alu_operand_1;
-    wire [DATA_WIDTH-1:0]  id_alu_operand_2;
-    wire [DATA_WIDTH-1:0]  id_store_data;
-    wire [DATA_WIDTH-1:0]  id_immediate;
-    wire [4:0]             id_inst_rd;
-    wire [3:0]             id_alu_funct;
-    wire [2:0]             id_branch_type;
-    wire                   id_op_ld;
-    wire                   id_op_ldu; // unsigned load
-    wire [1:0]             id_op_ld_sz; // load size
-    wire                   id_op_st;
-    wire [1:0]             id_op_st_sz; // store size
-    wire                   op_br;
-    wire                   op_reg;
-    wire                   op_imm;
-    wire                   opcode_op_jalr;
-    wire                   opcode_op_jal;
-    wire                   opcode_op_auipc;
-    wire                   opcode_op_lui;
+    wire                  exec_stall;
+    wire                  id_valid;      
+    wire [PC_WIDTH-1:0]   id_pc;
+    wire [DATA_WIDTH-1:0] id_alu_operand_1;
+    wire [DATA_WIDTH-1:0] id_alu_operand_2;
+    wire [DATA_WIDTH-1:0] id_store_data;
+    wire [DATA_WIDTH-1:0] id_immediate;
+    wire [4:0]            id_inst_rd;
+    wire [3:0]            id_alu_funct;
+    wire [2:0]            id_branch_type;
+    wire                  id_op_ld;
+    wire                  id_op_ldu; // unsigned load
+    wire [1:0]            id_op_ld_sz; // load size
+    wire                  id_op_st;
+    wire [1:0]            id_op_st_sz; // store size
+    wire                  op_br;
+    wire                  op_reg;
+    wire                  op_imm;
+    wire                  opcode_op_jalr;
+    wire                  opcode_op_jal;
+    wire                  opcode_op_auipc;
+    wire                  opcode_op_lui;
 // execute to mem stage connections
     wire                  mem_stall;
     wire                  exec_valid;
@@ -80,14 +80,14 @@ module uProc#(
     wire                  exec_op_st;
     wire  [1:0]           exec_op_st_sz;
 // mem to WB stage connections 
-    wire mem_valid_out; //input from mem stage is valid
-    wire [4:0]mem_rd_out; 
+    wire                  mem_valid_out; //input from mem stage is valid
+    wire [4:0]            mem_rd_out; 
     wire [DATA_WIDTH-1:0] mem_rd_data_out;
 // WB to gpr write port
 //gpr write port
-wire [4:0]gpr_rd_waddr;//unregistered
-wire[DATA_WIDTH-1:0] gpr_rd_wdata;//unregistered
-wire gpr_rd_we;//unregistered
+wire [4:0]                gpr_rd_waddr;//unregistered
+wire[DATA_WIDTH-1:0]      gpr_rd_wdata;//unregistered
+wire                      gpr_rd_we;//unregistered
 
 
 

@@ -1,0 +1,4 @@
+WARNING: src/dpram_2048x32.sv:14: $readmemh(src/program.hex): Not enough words in the file for the requested range [0:17].
+WARNING: src/dpram_2048x32.sv:14: $readmemh(src/program.hex): Not enough words in the file for the requested range [0:17].
+VCD info: dumpfile compile/waveforms.vcd opened for output.
+uProc_tb.sv:73: $finish called at 600000 (1ps)
