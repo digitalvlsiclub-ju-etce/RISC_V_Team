@@ -18,7 +18,7 @@ module uProc_tb #(
     // going to use  gpio , uart, timer, bus matrix(WishBone not written yet) 
 
 /*
-First test of the pupeline.
+First test of the pipeline.
 
 In uProc sv
 
