@@ -1,0 +1,70 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Sat Aug  8 07:20:09 2026
+[*]
+[dumpfile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/waveforms.vcd"
+[dumpfile_mtime] "Sat Aug  8 07:05:19 2026"
+[dumpfile_size] 27085
+[savefile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/waveforms.gtkw"
+[timestart] 0
+[size] 1710 1073
+[pos] -1 -1
+*-16.723417 121100 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[treeopen] uProc_tb.
+[treeopen] uProc_tb.u_uProc.
+[sst_width] 255
+[signals_width] 326
+[sst_expanded] 1
+[sst_vpaned_height] 324
+@28
+uProc_tb.u_uProc.u_instFetch.clk
+uProc_tb.u_uProc.u_instFetch.rst_n
+@22
+uProc_tb.u_uProc.u_instFetch.alu_addr[10:0]
+@28
+uProc_tb.u_uProc.u_instFetch.bist_en
+uProc_tb.u_uProc.u_instFetch.bist_fail
+uProc_tb.u_uProc.u_instFetch.bist_pass
+uProc_tb.u_uProc.u_instFetch.clk
+uProc_tb.u_uProc.u_instFetch.id_stall
+uProc_tb.u_uProc.u_instFetch.imem_rd
+@22
+uProc_tb.u_uProc.u_iccm_cntlr.mem_rd_data[31:0]
+uProc_tb.u_uProc.u_instDecode.inst_in[31:0]
+uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+uProc_tb.u_uProc.u_instFetch.imm_addr[10:0]
+@28
+uProc_tb.u_uProc.u_instFetch.pc_en
+uProc_tb.u_uProc.u_instFetch.pc_sel[1:0]
+uProc_tb.u_uProc.u_instFetch.rst_n
+uProc_tb.u_uProc.u_instDecode.exec_stall
+@23
+uProc_tb.u_uProc.u_instDecode.id_alu_funct_out[3:0]
+@22
+uProc_tb.u_uProc.u_instDecode.id_alu_operand_1_out[31:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_operand_2_out[31:0]
+@28
+uProc_tb.u_uProc.u_instDecode.id_branch_type_out[2:0]
+@22
+uProc_tb.u_uProc.u_instDecode.id_immediate_out[31:0]
+uProc_tb.u_uProc.u_instDecode.id_store_data_out[31:0]
+uProc_tb.u_uProc.u_instDecode.inst_rd_out[4:0]
+@28
+uProc_tb.u_uProc.u_instDecode.op_br_out
+uProc_tb.u_uProc.u_instDecode.op_ld_sz_out[1:0]
+uProc_tb.u_uProc.u_instDecode.op_ldu_out
+uProc_tb.u_uProc.u_instDecode.op_reg_out
+uProc_tb.u_uProc.u_instDecode.op_imm_out
+@22
+uProc_tb.u_uProc.u_gpr.rdData1[31:0]
+uProc_tb.u_uProc.u_gpr.rdData2[31:0]
+uProc_tb.u_uProc.u_gpr.wrData[31:0]
+uProc_tb.u_uProc.u_instExec.exec_alu_result_out[31:0]
+uProc_tb.u_uProc.u_instExec.exec_store_data_out[31:0]
+uProc_tb.u_uProc.u_instExec.exec_target_addr_out[10:0]
+uProc_tb.u_uProc.u_instWB.mem_rd_data_in[31:0]
+uProc_tb.u_uProc.u_gpr.sr1[4:0]
+uProc_tb.u_uProc.u_gpr.sr2[4:0]
+uProc_tb.u_uProc.u_iccm_cntlr.mem_rd_addr[10:0]
+[pattern_trace] 1
+[pattern_trace] 0
