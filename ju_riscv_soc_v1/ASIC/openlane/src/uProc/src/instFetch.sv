@@ -17,8 +17,8 @@ module instFetch #(
     input [ADDR_WIDTH-1:0] alu_addr,
     input [ADDR_WIDTH-1:0] imm_addr,
 
-    input pc_en,
-    output imem_rd,
+    input                   pc_en,
+    output                  imem_rd,
     output [ADDR_WIDTH-1:0] imem_rd_addr // pc output
 );
 
@@ -36,5 +36,6 @@ module instFetch #(
         .pc(imem_rd_addr)
     );
 
-    assign imem_rd = pc_en; 
+assign imem_rd = pc_en;
+ 
 endmodule

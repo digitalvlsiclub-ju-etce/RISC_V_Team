@@ -15,8 +15,8 @@ module instDecode #(
 
     
     input [DATA_WIDTH-1:0] inst_in,
-    input inst_valid,
-    input [PC_WIDTH-1:0] pc_in,
+    input                  inst_valid,
+    input [PC_WIDTH-1:0]   pc_in,
 
 
     //gpr read port
@@ -31,7 +31,7 @@ module instDecode #(
     //input [31:0] gpr_wdata,
 
     //decoder output stage 
-    output                       id_valid_out,//
+    output reg                   id_valid_out,//
     output reg[PC_WIDTH-1:0]     pc_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_1_out,
     output reg[DATA_WIDTH-1:0]   id_alu_operand_2_out,
@@ -54,7 +54,7 @@ module instDecode #(
     output reg                   opcode_op_lui_out
 
 );
-
+assign id_stall = exec_stall;
 wire [6:0] inst_opcode_c = inst_in[6:0];
 //rd is not used in case of branch and store instructions
 wire [4:0] inst_rd_c     = inst_in [11:7] & {5{~(op_br_c | op_st_c)}};
@@ -276,8 +276,9 @@ end
 
 //ID stage pipeline registers
 
-always @(posedge clk) begin
-  if(rst_n)begin
+always @(posedge clk or negedge rst_n) begin
+  if(~rst_n)begin
+    id_valid_out         <= 'b0;
     pc_out               <= 'b0;
     id_alu_operand_1_out <= 'b0;
     id_alu_operand_2_out <= 'b0;
@@ -299,7 +300,8 @@ always @(posedge clk) begin
     opcode_op_auipc_out  <= 'b0;
     opcode_op_lui_out    <= 'b0;
   end
-  else if (!id_stall) begin
+  else if (!exec_stall && inst_valid) begin
+    id_valid_out         <= 1'b1;
     pc_out               <= pc_in;
     id_alu_operand_1_out <= id_alu_operand_1_out_c;
     id_alu_operand_2_out <= id_alu_operand_2_out_c;

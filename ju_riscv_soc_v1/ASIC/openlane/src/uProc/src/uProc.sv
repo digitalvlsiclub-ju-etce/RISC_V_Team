@@ -20,7 +20,8 @@ module uProc#(
     wire [1:0]            pc_sel = load_target_addr_out ? 2'b01 : 2'b00 ;
     wire [PC_WIDTH-1:0]   imm_addr;
     wire [PC_WIDTH-1:0]   alu_addr = target_addr_out ;
-    wire                  pc_en = 1'b1;
+    wire                  pc_en_temp =  1'b1;
+    reg                   pc_en;
 //instFetch outputs to ccm_controller
     wire                  imem_rd;
     wire [PC_WIDTH-1:0]   pc;
@@ -89,7 +90,11 @@ wire [4:0]                gpr_rd_waddr;//unregistered
 wire[DATA_WIDTH-1:0]      gpr_rd_wdata;//unregistered
 wire                      gpr_rd_we;//unregistered
 
-
+    
+always @(posedge clk or negedge rst_n) begin
+        if(~rst_n) pc_en <= 1'b0;
+        else pc_en <= pc_en_temp;
+end
 
 // instantiate instFetch
     
@@ -182,7 +187,7 @@ gpr #(
     .DATA_WIDTH(DATA_WIDTH)
 )u_gpr(
   .clk(clk),
-  .reset(rst_n),
+  .reset(~rst_n),
 
   //write port
   .write(gpr_rd_we),

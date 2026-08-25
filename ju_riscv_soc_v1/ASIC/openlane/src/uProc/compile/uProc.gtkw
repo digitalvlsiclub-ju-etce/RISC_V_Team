@@ -1,0 +1,379 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Tue Aug 25 15:58:11 2026
+[*]
+[dumpfile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/waveforms.vcd"
+[dumpfile_mtime] "Tue Aug 25 15:56:35 2026"
+[dumpfile_size] 32004
+[savefile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/uProc.gtkw"
+[timestart] 84000
+[size] 1710 1073
+[pos] -1 -1
+*-14.704035 115000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[treeopen] uProc_tb.
+[treeopen] uProc_tb.u_uProc.
+[treeopen] uProc_tb.u_uProc.u_instFetch.
+[sst_width] 255
+[signals_width] 368
+[sst_expanded] 1
+[sst_vpaned_height] 529
+@28
+uProc_tb.u_uProc.u_instFetch.clk
+uProc_tb.u_uProc.u_instFetch.rst_n
+@800200
+-instFetch
+@28
+uProc_tb.u_uProc.u_instFetch.pc_en
+@22
+uProc_tb.u_uProc.u_instFetch.u_pc.pc[10:0]
+@28
+uProc_tb.u_uProc.u_instFetch.imem_rd
+@c00022
+uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+@28
+(0)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(1)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(2)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(3)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(4)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(5)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(6)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(7)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(8)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(9)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+(10)uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
+@1401200
+-group_end
+@28
+uProc_tb.u_uProc.u_instFetch.id_stall
+@1000200
+-instFetch
+@800200
+-decode_in
+@28
+uProc_tb.u_uProc.u_instDecode.exec_stall
+@22
+uProc_tb.u_uProc.u_instDecode.inst_in[31:0]
+@28
+uProc_tb.u_uProc.u_instDecode.inst_valid
+@22
+uProc_tb.u_uProc.u_instDecode.pc_in[10:0]
+uProc_tb.u_uProc.u_instDecode.gpr_rs1_rdata[31:0]
+uProc_tb.u_uProc.u_instDecode.gpr_rs2_rdata[31:0]
+@1000200
+-decode_in
+@c00200
+-decode_comb
+@22
+uProc_tb.u_uProc.u_instDecode.inst_opcode_c[6:0]
+uProc_tb.u_uProc.u_instDecode.inst_func7_c[6:0]
+@28
+uProc_tb.u_uProc.u_instDecode.inst_func3_c[2:0]
+@22
+uProc_tb.u_uProc.u_instDecode.inst_rd_c[4:0]
+@28
+uProc_tb.u_uProc.u_instDecode.func7_base_1
+uProc_tb.u_uProc.u_instDecode.func7_base_2
+uProc_tb.u_uProc.u_instDecode.func7_mul
+uProc_tb.u_uProc.u_instDecode.opcode_op_imm_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_reg_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_ld_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_st_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_br_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_auipc_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_lui_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_jal_c
+uProc_tb.u_uProc.u_instDecode.opcode_op_jalr_c
+uProc_tb.u_uProc.u_instDecode.op_jump_c
+uProc_tb.u_uProc.u_instDecode.op_add_c
+uProc_tb.u_uProc.u_instDecode.op_sub_c
+uProc_tb.u_uProc.u_instDecode.op_sll_c
+uProc_tb.u_uProc.u_instDecode.op_slt_c
+uProc_tb.u_uProc.u_instDecode.op_sltu_c
+uProc_tb.u_uProc.u_instDecode.op_xor_c
+uProc_tb.u_uProc.u_instDecode.op_or_c
+uProc_tb.u_uProc.u_instDecode.op_srl_c
+uProc_tb.u_uProc.u_instDecode.op_sra_c
+uProc_tb.u_uProc.u_instDecode.op_and_c
+uProc_tb.u_uProc.u_instDecode.op_imm_addi_c
+uProc_tb.u_uProc.u_instDecode.op_imm_slli_c
+uProc_tb.u_uProc.u_instDecode.op_imm_slti_c
+uProc_tb.u_uProc.u_instDecode.op_imm_sltiu_c
+uProc_tb.u_uProc.u_instDecode.op_imm_xori_c
+uProc_tb.u_uProc.u_instDecode.op_imm_ori_c
+uProc_tb.u_uProc.u_instDecode.op_imm_srli_c
+uProc_tb.u_uProc.u_instDecode.op_imm_srai_c
+uProc_tb.u_uProc.u_instDecode.op_imm_andi_c
+uProc_tb.u_uProc.u_instDecode.op_imm_c
+uProc_tb.u_uProc.u_instDecode.op_reg_add_c
+uProc_tb.u_uProc.u_instDecode.op_reg_sub_c
+uProc_tb.u_uProc.u_instDecode.op_reg_sll_c
+uProc_tb.u_uProc.u_instDecode.op_reg_slt_c
+uProc_tb.u_uProc.u_instDecode.op_reg_sltu_c
+uProc_tb.u_uProc.u_instDecode.op_reg_xor_c
+uProc_tb.u_uProc.u_instDecode.op_reg_or_c
+uProc_tb.u_uProc.u_instDecode.op_reg_srl_c
+uProc_tb.u_uProc.u_instDecode.op_reg_sra_c
+uProc_tb.u_uProc.u_instDecode.op_reg_and_c
+uProc_tb.u_uProc.u_instDecode.op_reg_c
+uProc_tb.u_uProc.u_instDecode.op_ld_lb_c
+uProc_tb.u_uProc.u_instDecode.op_ld_lh_c
+uProc_tb.u_uProc.u_instDecode.op_ld_lw_c
+uProc_tb.u_uProc.u_instDecode.op_ld_lbu_c
+uProc_tb.u_uProc.u_instDecode.op_ld_lhu_c
+uProc_tb.u_uProc.u_instDecode.op_ld_c
+uProc_tb.u_uProc.u_instDecode.op_st_sb_c
+uProc_tb.u_uProc.u_instDecode.op_st_sh_c
+uProc_tb.u_uProc.u_instDecode.op_st_sw_c
+uProc_tb.u_uProc.u_instDecode.op_st_c
+uProc_tb.u_uProc.u_instDecode.op_br_beq_c
+uProc_tb.u_uProc.u_instDecode.op_br_bne_c
+uProc_tb.u_uProc.u_instDecode.op_br_blt_c
+uProc_tb.u_uProc.u_instDecode.op_br_bge_c
+uProc_tb.u_uProc.u_instDecode.op_br_bltu_c
+uProc_tb.u_uProc.u_instDecode.op_br_bgeu_c
+uProc_tb.u_uProc.u_instDecode.op_br_c
+@22
+uProc_tb.u_uProc.u_instDecode.id_imm_i_type_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_imm_s_type_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_imm_b_type_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_imm_u_type_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_imm_j_type_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_funct_out_c[3:0]
+@28
+uProc_tb.u_uProc.u_instDecode.id_branch_type_out_c[2:0]
+@22
+uProc_tb.u_uProc.u_instDecode.id_immediate_out_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_operand_1_out_c[31:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_operand_2_out_c[31:0]
+@28
+uProc_tb.u_uProc.u_gpr.clk
+uProc_tb.u_uProc.u_gpr.reset
+@1401200
+-decode_comb
+@800200
+-decode_out
+@29
+uProc_tb.u_uProc.u_instDecode.id_valid_out
+@22
+uProc_tb.u_uProc.u_instDecode.gpr_rs1_raddr[4:0]
+uProc_tb.u_uProc.u_instDecode.gpr_rs2_raddr[4:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_funct_out[3:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_operand_1_out[31:0]
+uProc_tb.u_uProc.u_instDecode.id_alu_operand_2_out[31:0]
+@28
+uProc_tb.u_uProc.u_instDecode.id_branch_type_out[2:0]
+@22
+uProc_tb.u_uProc.u_instDecode.id_immediate_out[31:0]
+uProc_tb.u_uProc.u_instDecode.id_store_data_out[31:0]
+@28
+uProc_tb.u_uProc.u_instDecode.op_br_out
+uProc_tb.u_uProc.u_instDecode.op_imm_out
+uProc_tb.u_uProc.u_instDecode.op_ld_out
+uProc_tb.u_uProc.u_instDecode.op_ld_sz_out[1:0]
+uProc_tb.u_uProc.u_instDecode.op_ldu_out
+uProc_tb.u_uProc.u_instDecode.op_reg_out
+uProc_tb.u_uProc.u_instDecode.op_st_out
+uProc_tb.u_uProc.u_instDecode.op_st_sz_out[1:0]
+uProc_tb.u_uProc.u_instDecode.opcode_op_auipc_out
+uProc_tb.u_uProc.u_instDecode.opcode_op_jal_out
+uProc_tb.u_uProc.u_instDecode.opcode_op_jalr_out
+uProc_tb.u_uProc.u_instDecode.opcode_op_lui_out
+@22
+uProc_tb.u_uProc.u_instDecode.pc_out[10:0]
+@28
+uProc_tb.u_uProc.u_instDecode.id_stall
+@1000200
+-decode_out
+@800200
+-exec_in
+@28
+uProc_tb.u_uProc.u_instExec.clk
+uProc_tb.u_uProc.u_instExec.rst_n
+uProc_tb.u_uProc.u_instExec.mem_stall
+uProc_tb.u_uProc.u_instExec.id_valid_in
+@22
+uProc_tb.u_uProc.u_instExec.pc_in[10:0]
+uProc_tb.u_uProc.u_instExec.id_alu_operand_1_in[31:0]
+uProc_tb.u_uProc.u_instExec.id_alu_operand_2_in[31:0]
+uProc_tb.u_uProc.u_instExec.id_store_data_in[31:0]
+uProc_tb.u_uProc.u_instExec.id_immediate_in[31:0]
+uProc_tb.u_uProc.u_instExec.inst_rd_in[4:0]
+uProc_tb.u_uProc.u_instExec.id_alu_funct_in[3:0]
+@28
+uProc_tb.u_uProc.u_instExec.id_branch_type_in[2:0]
+uProc_tb.u_uProc.u_instExec.op_ld_in
+uProc_tb.u_uProc.u_instExec.op_ldu_in
+uProc_tb.u_uProc.u_instExec.op_ld_sz_in[1:0]
+uProc_tb.u_uProc.u_instExec.op_st_in
+uProc_tb.u_uProc.u_instExec.op_st_sz_in[1:0]
+uProc_tb.u_uProc.u_instExec.op_br_in
+uProc_tb.u_uProc.u_instExec.op_reg_in
+uProc_tb.u_uProc.u_instExec.op_imm_in
+uProc_tb.u_uProc.u_instExec.opcode_op_jalr_in
+uProc_tb.u_uProc.u_instExec.opcode_op_jal_in
+uProc_tb.u_uProc.u_instExec.opcode_op_auipc_in
+uProc_tb.u_uProc.u_instExec.opcode_op_lui_in
+@1000200
+-exec_in
+@800200
+-exec_comb
+@28
+uProc_tb.u_uProc.u_instExec.op_slt_with_both_operands_neg_c
+@22
+uProc_tb.u_uProc.u_instExec.adder_in_A_c[31:0]
+uProc_tb.u_uProc.u_instExec.adder_in_B_c[31:0]
+@28
+uProc_tb.u_uProc.u_instExec.adder_carry_out_c
+@22
+uProc_tb.u_uProc.u_instExec.adder_out_c[31:0]
+@28
+uProc_tb.u_uProc.u_instExec.adder_out_zero_c
+uProc_tb.u_uProc.u_instExec.sltu_result_c
+uProc_tb.u_uProc.u_instExec.slt_result_c
+@22
+uProc_tb.u_uProc.u_instExec.shift_amount_c[4:0]
+uProc_tb.u_uProc.u_instExec.sll_result_c[31:0]
+uProc_tb.u_uProc.u_instExec.srl_result_c[31:0]
+@28
+uProc_tb.u_uProc.u_instExec.op1_sign_bit_c
+@22
+uProc_tb.u_uProc.u_instExec.sra_result_c[31:0]
+uProc_tb.u_uProc.u_instExec.exec_alu_result_out_c[31:0]
+uProc_tb.u_uProc.u_instExec.temp_exec_target_addr[31:0]
+@28
+uProc_tb.u_uProc.u_instExec.branch_true_c
+@1000200
+-exec_comb
+@800200
+-exec_out
+@28
+uProc_tb.u_uProc.u_instExec.exec_stall
+uProc_tb.u_uProc.u_instExec.exec_valid_out
+@22
+uProc_tb.u_uProc.u_instExec.exec_target_addr_out[10:0]
+@28
+uProc_tb.u_uProc.u_instExec.exec_load_target_addr_out
+@22
+uProc_tb.u_uProc.u_instExec.exec_rd_out[4:0]
+uProc_tb.u_uProc.u_instExec.exec_alu_result_out[31:0]
+uProc_tb.u_uProc.u_instExec.exec_store_data_out[31:0]
+@28
+uProc_tb.u_uProc.u_instExec.exec_op_ld_out
+uProc_tb.u_uProc.u_instExec.exec_op_ldu_out
+uProc_tb.u_uProc.u_instExec.exec_op_ld_sz_out[1:0]
+uProc_tb.u_uProc.u_instExec.exec_op_st_out
+uProc_tb.u_uProc.u_instExec.exec_op_st_sz_out[1:0]
+@1000200
+-exec_out
+@28
+uProc_tb.u_uProc.u_instMem.clk
+uProc_tb.u_uProc.u_instMem.rst_n
+@800200
+-mem_in
+@28
+uProc_tb.u_uProc.u_instMem.exec_valid_in
+@22
+uProc_tb.u_uProc.u_instMem.exec_rd_in[4:0]
+uProc_tb.u_uProc.u_instMem.exec_alu_result_in[31:0]
+uProc_tb.u_uProc.u_instMem.exec_store_data_in[31:0]
+@28
+uProc_tb.u_uProc.u_instMem.exec_op_ld_in
+uProc_tb.u_uProc.u_instMem.exec_op_ldu_in
+uProc_tb.u_uProc.u_instMem.exec_op_ld_sz_in[1:0]
+uProc_tb.u_uProc.u_instMem.exec_op_st_in
+uProc_tb.u_uProc.u_instMem.exec_op_st_sz_in[1:0]
+@1000200
+-mem_in
+@800200
+-mem_out
+@28
+uProc_tb.u_uProc.u_instMem.mem_stall
+uProc_tb.u_uProc.u_instMem.mem_valid_out
+@22
+uProc_tb.u_uProc.u_instMem.mem_rd_out[4:0]
+uProc_tb.u_uProc.u_instMem.mem_rd_data_out[31:0]
+@1000200
+-mem_out
+@28
+uProc_tb.u_uProc.u_instWB.clk
+uProc_tb.u_uProc.u_instWB.rst_n
+@800200
+-writeback_in
+@28
+uProc_tb.u_uProc.u_instWB.mem_valid_in
+@c00022
+uProc_tb.u_uProc.u_instWB.mem_rd_in[4:0]
+@28
+(0)uProc_tb.u_uProc.u_instWB.mem_rd_in[4:0]
+(1)uProc_tb.u_uProc.u_instWB.mem_rd_in[4:0]
+(2)uProc_tb.u_uProc.u_instWB.mem_rd_in[4:0]
+(3)uProc_tb.u_uProc.u_instWB.mem_rd_in[4:0]
+(4)uProc_tb.u_uProc.u_instWB.mem_rd_in[4:0]
+@1401200
+-group_end
+@22
+uProc_tb.u_uProc.u_instWB.mem_rd_data_in[31:0]
+@1000200
+-writeback_in
+@800200
+-writeback_out
+@22
+uProc_tb.u_uProc.u_instWB.gpr_rd_waddr[4:0]
+uProc_tb.u_uProc.u_instWB.gpr_rd_wdata[31:0]
+@28
+uProc_tb.u_uProc.u_instWB.gpr_rd_we
+@1000200
+-writeback_out
+@800200
+-gpr
+@28
+uProc_tb.u_uProc.u_gpr.clk
+uProc_tb.u_uProc.u_gpr.reset
+@200
+-
+@22
+uProc_tb.u_uProc.u_gpr.sr1[4:0]
+uProc_tb.u_uProc.u_gpr.rdData1[31:0]
+@200
+-
+@22
+uProc_tb.u_uProc.u_gpr.sr2[4:0]
+uProc_tb.u_uProc.u_gpr.rdData2[31:0]
+@200
+-
+@28
+uProc_tb.u_uProc.u_gpr.write
+@22
+uProc_tb.u_uProc.u_gpr.dr[4:0]
+uProc_tb.u_uProc.u_gpr.wrData[31:0]
+@1000200
+-gpr
+[pattern_trace] 1
+[pattern_trace] 0

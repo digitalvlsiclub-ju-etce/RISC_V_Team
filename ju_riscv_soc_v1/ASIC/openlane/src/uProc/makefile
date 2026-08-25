@@ -14,6 +14,7 @@ SOURCES = $(wildcard $(SRC_DIR)/*.v $(SRC_DIR)/*.sv ) uProc_tb.sv
 # All generated files are saved in compile folder
 OUTPUT_EXE = $(OUT_DIR)/sim.vvp
 WAVE_DATA  = $(OUT_DIR)/waveforms.vcd
+SIGNAL_FILE = $(OUT_DIR)/uProc.gtkw
 SIM_LOG    = $(OUT_DIR)/simulation_log.txt
 
 
@@ -40,7 +41,7 @@ sim: compile
 
 wave: sim
 	@echo "Opening waveforms..."
-	$(VIEWER) $(WAVE_DATA) &
+	$(VIEWER) $(WAVE_DATA) $(SIGNAL_FILE) &
 
 # only clean compile directory
 clean:

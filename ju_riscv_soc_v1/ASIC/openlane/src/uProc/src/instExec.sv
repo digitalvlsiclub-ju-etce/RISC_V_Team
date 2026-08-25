@@ -36,7 +36,7 @@ module instExec #(
     input                    opcode_op_auipc_in,
     input                    opcode_op_lui_in,
 
-    output                      exec_valid_out,
+    output reg                  exec_valid_out,
     output     [PC_WIDTH-1:0]   exec_target_addr_out,    // unregistered 
     output                      exec_load_target_addr_out, // unregistered 
     output reg [4:0]            exec_rd_out, 
@@ -49,7 +49,7 @@ module instExec #(
     output reg [1:0]            exec_op_st_sz_out   
 );
 
-assign exec_stall = 1'b0;
+assign exec_stall = mem_stall;
 
 //ALU:addition and substraction (using a full adder)
 //when full adder is used for subtraction, carry_out  = ~borrow_out (c_out=1 means A>B, c_out=0 means A<B)
@@ -182,7 +182,7 @@ end
 wire [DATA_WIDTH-1 : 0] temp_exec_target_addr = opcode_op_jalr_in ? {adder_out_c[31:1],1'b0} 
                                              : ( pc_in + id_immediate_in );
 
-assign  exec_target_addr_out  = temp_exec_target_addr [PC_WIDTH-1 : 0];                             
+assign  exec_target_addr_out  = temp_exec_target_addr [PC_WIDTH-1 : 0]; //combinatorially fed back to PC                          
 
 reg branch_true_c ;
 always @(*) begin
@@ -199,12 +199,13 @@ always @(*) begin
 end
 
 // pc is loaded with target address under these conditions
-assign exec_load_target_addr_out = branch_true_c;
+assign exec_load_target_addr_out = branch_true_c; //strobe for exec_target_addr_out 
 
 //EX stage pipeline registers
 
-always @(posedge clk) begin
-  if(rst_n)begin
+always @(posedge clk or negedge rst_n ) begin
+  if(~rst_n)begin
+    exec_valid_out      <= 'b0;
     exec_rd_out         <= 'b0;
     exec_alu_result_out <= 'b0;
     exec_store_data_out <= 'b0;
@@ -214,7 +215,8 @@ always @(posedge clk) begin
     exec_op_st_out      <= 'b0;
     exec_op_st_sz_out   <= 'b0; 
   end
-  else if (!exec_stall) begin
+  else if (!mem_stall && id_valid_in) begin
+    exec_valid_out      <= 1'b1;
     exec_rd_out         <= inst_rd_in;
     exec_alu_result_out <= exec_alu_result_out_c;
     exec_store_data_out <= id_store_data_in;

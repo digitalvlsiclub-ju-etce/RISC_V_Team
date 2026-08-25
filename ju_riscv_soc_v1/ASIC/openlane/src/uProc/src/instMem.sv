@@ -25,7 +25,7 @@ module instMem #(
 
     //output to WB stage 
     output  reg                  mem_valid_out, //input from mem stage is valid
-    output  reg[4:0]            mem_rd_out, 
+    output  reg[4:0]             mem_rd_out, 
     output  reg [DATA_WIDTH-1:0] mem_rd_data_out   
 );
 
@@ -33,8 +33,8 @@ assign mem_stall = 1'b0 ; // to do
 
 //MEM stage pipeline registers
 
-always @(posedge clk) begin
-  if(rst_n)begin
+always @(posedge clk or negedge rst_n) begin
+  if(~rst_n)begin
     mem_valid_out   <= 'b0;
     mem_rd_out      <= 'b0;
     mem_rd_data_out <= 'b0;
