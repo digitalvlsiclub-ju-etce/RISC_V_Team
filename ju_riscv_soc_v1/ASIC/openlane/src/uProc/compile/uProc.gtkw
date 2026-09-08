@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Tue Aug 25 15:58:11 2026
+[*] Tue Sep  8 16:09:01 2026
 [*]
 [dumpfile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/waveforms.vcd"
-[dumpfile_mtime] "Tue Aug 25 15:56:35 2026"
-[dumpfile_size] 32004
+[dumpfile_mtime] "Tue Sep  8 16:04:00 2026"
+[dumpfile_size] 20627
 [savefile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/uProc.gtkw"
-[timestart] 84000
+[timestart] 87300
 [size] 1710 1073
 [pos] -1 -1
-*-14.704035 115000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+*-14.704035 125000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -42,10 +42,16 @@
 [sst_width] 255
 [signals_width] 368
 [sst_expanded] 1
-[sst_vpaned_height] 529
+[sst_vpaned_height] 469
 @28
 uProc_tb.u_uProc.u_instFetch.clk
 uProc_tb.u_uProc.u_instFetch.rst_n
+uProc_tb.u_uProc.u_iccm_cntlr.cntlr_rd
+@22
+uProc_tb.u_uProc.u_iccm_cntlr.cntlr_raddr[10:0]
+uProc_tb.u_uProc.u_iccm_cntlr.cntlr_rd_data[31:0]
+@28
+uProc_tb.u_uProc.u_iccm_cntlr.cntlr_rd_valid
 @800200
 -instFetch
 @28
@@ -72,6 +78,7 @@ uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
 -group_end
 @28
 uProc_tb.u_uProc.u_instFetch.id_stall
+uProc_tb.u_uProc.u_instFetch.pc_run_c
 @1000200
 -instFetch
 @800200
@@ -88,7 +95,12 @@ uProc_tb.u_uProc.u_instDecode.gpr_rs1_rdata[31:0]
 uProc_tb.u_uProc.u_instDecode.gpr_rs2_rdata[31:0]
 @1000200
 -decode_in
-@c00200
+@28
+uProc_tb.u_uProc.u_gpr.write
+@22
+uProc_tb.u_uProc.u_gpr.dr[4:0]
+uProc_tb.u_uProc.u_gpr.wrData[31:0]
+@800200
 -decode_comb
 @22
 uProc_tb.u_uProc.u_instDecode.inst_opcode_c[6:0]
@@ -96,8 +108,17 @@ uProc_tb.u_uProc.u_instDecode.inst_func7_c[6:0]
 @28
 uProc_tb.u_uProc.u_instDecode.inst_func3_c[2:0]
 @22
+uProc_tb.u_uProc.u_instDecode.gpr_rs1_raddr[4:0]
+uProc_tb.u_uProc.u_instDecode.gpr_rs2_raddr[4:0]
+uProc_tb.u_uProc.u_instDecode.gpr_rs1_raddr[4:0]
+uProc_tb.u_uProc.u_instDecode.gpr_rs2_raddr[4:0]
 uProc_tb.u_uProc.u_instDecode.inst_rd_c[4:0]
 @28
+uProc_tb.u_uProc.u_instDecode.id_data_hazard_c
+uProc_tb.u_uProc.u_instDecode.id_data_hazard_bubble_c
+uProc_tb.u_uProc.u_instDecode.id_bubble_c
+uProc_tb.u_uProc.u_instDecode.id_bubble_d0
+uProc_tb.u_uProc.u_instDecode.id_cycle
 uProc_tb.u_uProc.u_instDecode.func7_base_1
 uProc_tb.u_uProc.u_instDecode.func7_base_2
 uProc_tb.u_uProc.u_instDecode.func7_mul
@@ -175,15 +196,16 @@ uProc_tb.u_uProc.u_instDecode.id_alu_operand_2_out_c[31:0]
 @28
 uProc_tb.u_uProc.u_gpr.clk
 uProc_tb.u_uProc.u_gpr.reset
-@1401200
+@1000200
 -decode_comb
 @800200
 -decode_out
-@29
+@28
 uProc_tb.u_uProc.u_instDecode.id_valid_out
+@29
+uProc_tb.u_uProc.u_instDecode.id_cycle
 @22
-uProc_tb.u_uProc.u_instDecode.gpr_rs1_raddr[4:0]
-uProc_tb.u_uProc.u_instDecode.gpr_rs2_raddr[4:0]
+uProc_tb.u_uProc.u_instDecode.inst_rd_out[4:0]
 uProc_tb.u_uProc.u_instDecode.id_alu_funct_out[3:0]
 uProc_tb.u_uProc.u_instDecode.id_alu_operand_1_out[31:0]
 uProc_tb.u_uProc.u_instDecode.id_alu_operand_2_out[31:0]
@@ -375,5 +397,42 @@ uProc_tb.u_uProc.u_gpr.dr[4:0]
 uProc_tb.u_uProc.u_gpr.wrData[31:0]
 @1000200
 -gpr
+@800200
+-gpr_comb
+@22
+uProc_tb.u_uProc.u_gpr.X0[31:0]
+uProc_tb.u_uProc.u_gpr.X1[31:0]
+uProc_tb.u_uProc.u_gpr.X2[31:0]
+uProc_tb.u_uProc.u_gpr.X3[31:0]
+uProc_tb.u_uProc.u_gpr.X4[31:0]
+uProc_tb.u_uProc.u_gpr.X5[31:0]
+uProc_tb.u_uProc.u_gpr.X6[31:0]
+uProc_tb.u_uProc.u_gpr.X7[31:0]
+uProc_tb.u_uProc.u_gpr.X8[31:0]
+uProc_tb.u_uProc.u_gpr.X9[31:0]
+uProc_tb.u_uProc.u_gpr.X10[31:0]
+uProc_tb.u_uProc.u_gpr.X11[31:0]
+uProc_tb.u_uProc.u_gpr.X12[31:0]
+uProc_tb.u_uProc.u_gpr.X13[31:0]
+uProc_tb.u_uProc.u_gpr.X14[31:0]
+uProc_tb.u_uProc.u_gpr.X15[31:0]
+uProc_tb.u_uProc.u_gpr.X16[31:0]
+uProc_tb.u_uProc.u_gpr.X17[31:0]
+uProc_tb.u_uProc.u_gpr.X18[31:0]
+uProc_tb.u_uProc.u_gpr.X19[31:0]
+uProc_tb.u_uProc.u_gpr.X20[31:0]
+uProc_tb.u_uProc.u_gpr.X21[31:0]
+uProc_tb.u_uProc.u_gpr.X22[31:0]
+uProc_tb.u_uProc.u_gpr.X23[31:0]
+uProc_tb.u_uProc.u_gpr.X24[31:0]
+uProc_tb.u_uProc.u_gpr.X25[31:0]
+uProc_tb.u_uProc.u_gpr.X26[31:0]
+uProc_tb.u_uProc.u_gpr.X27[31:0]
+uProc_tb.u_uProc.u_gpr.X28[31:0]
+uProc_tb.u_uProc.u_gpr.X29[31:0]
+uProc_tb.u_uProc.u_gpr.X30[31:0]
+uProc_tb.u_uProc.u_gpr.X31[31:0]
+@1000200
+-gpr_comb
 [pattern_trace] 1
 [pattern_trace] 0

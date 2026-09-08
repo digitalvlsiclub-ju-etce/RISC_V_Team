@@ -54,7 +54,9 @@ module instDecode #(
     output reg                   opcode_op_lui_out
 
 );
-assign id_stall = exec_stall;
+wire id_data_hazard_c;
+
+
 wire [6:0] inst_opcode_c = inst_in[6:0];
 //rd is not used in case of branch and store instructions
 wire [4:0] inst_rd_c     = inst_in [11:7] & {5{~(op_br_c | op_st_c)}};
@@ -275,7 +277,7 @@ always @(*) begin
 end
 
 //ID stage pipeline registers
-
+wire id_cycle;
 always @(posedge clk or negedge rst_n) begin
   if(~rst_n)begin
     id_valid_out         <= 'b0;
@@ -301,7 +303,7 @@ always @(posedge clk or negedge rst_n) begin
     opcode_op_lui_out    <= 'b0;
   end
   else if (!exec_stall && inst_valid) begin
-    id_valid_out         <= 1'b1;
+    id_valid_out         <= id_cycle;
     pc_out               <= pc_in;
     id_alu_operand_1_out <= id_alu_operand_1_out_c;
     id_alu_operand_2_out <= id_alu_operand_2_out_c;
@@ -324,5 +326,32 @@ always @(posedge clk or negedge rst_n) begin
     opcode_op_lui_out    <= opcode_op_lui_c;
  end
 end
+
+//Data Hazard Detection
+assign id_data_hazard_c = ((inst_rd_out == gpr_rs1_raddr) | (inst_rd_out == gpr_rs2_raddr)) & (inst_rd_out != 5'b0);
+reg id_data_hazard_d0;
+reg id_data_hazard_d1;
+reg id_bubble_d0;
+
+wire id_data_hazard_bubble_c = id_data_hazard_c | id_data_hazard_d0 | id_data_hazard_d1;
+wire id_hazard_bubble_c = id_data_hazard_bubble_c;
+wire id_bubble_c = id_hazard_bubble_c;
+assign id_cycle = (~id_bubble_c & id_bubble_d0) | (inst_valid & ~id_bubble_c);
+
+always @(posedge clk or negedge rst_n)  begin
+  if(~rst_n)begin
+    id_data_hazard_d0 <= 1'b0; 
+    id_data_hazard_d1 <= 1'b0; 
+    id_bubble_d0 <= 1'b0;
+  end
+  else begin
+    id_data_hazard_d0 <= id_data_hazard_c ;
+    id_data_hazard_d1 <= id_data_hazard_d0;
+    id_bubble_d0 <= id_bubble_c;
+  end
+end
+
+assign id_stall = exec_stall | id_bubble_c;
+
 
 endmodule

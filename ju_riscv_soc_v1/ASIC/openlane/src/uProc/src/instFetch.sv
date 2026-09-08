@@ -21,6 +21,7 @@ module instFetch #(
     output                  imem_rd,
     output [ADDR_WIDTH-1:0] imem_rd_addr // pc output
 );
+    wire pc_run_c = pc_en & ~id_stall;
 
     //instantiate pc_module
 
@@ -29,13 +30,13 @@ module instFetch #(
     )u_pc(
         .clk(clk), 
         .rst_n(rst_n),
-        .pc_en(pc_en),
+        .pc_en(pc_run_c),
         .pc_sel(pc_sel),
         .imm_addr(imm_addr),
         .alu_addr(alu_addr),
         .pc(imem_rd_addr)
     );
 
-assign imem_rd = pc_en;
+assign imem_rd = pc_run_c;
  
 endmodule
