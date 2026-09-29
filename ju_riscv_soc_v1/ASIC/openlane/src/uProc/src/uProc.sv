@@ -17,13 +17,15 @@ module uProc#(
     wire [PC_WIDTH-1:0]   target_addr_out;
     wire                  load_target_addr_out;
 //instFetch inputs
-    wire [1:0]            pc_sel = load_target_addr_out ? 2'b01 : 2'b00 ;
+    //wire [1:0]            pc_sel = id_stall ? 2'b11 : (load_target_addr_out ? 2'b01 : 2'b00) ;
+    wire [1:0]            pc_sel = load_target_addr_out ? 2'b01 : (id_stall ? 2'b11 : 2'b00) ;
     wire [PC_WIDTH-1:0]   imm_addr;
     wire [PC_WIDTH-1:0]   alu_addr = target_addr_out ;
     wire                  pc_en_temp =  1'b1;
     reg                   pc_en;
 //instFetch outputs to ccm_controller
     wire                  imem_rd;
+    wire [ADDR_WIDTH-1:0] imem_rd_addr; //insruction fetch address
     wire [PC_WIDTH-1:0]   pc;
 //ccm_controller and iccm interface
     wire                  mem_rd;
@@ -116,8 +118,9 @@ instFetch #(
     .imm_addr(imm_addr),
 
     .pc_en(pc_en),
+    .pc(pc),
     .imem_rd(imem_rd),
-    .imem_rd_addr(pc)
+    .imem_rd_addr(imem_rd_addr)
 );
 
 // instantiate ccm_controller as u_iccm_cntlr
@@ -136,7 +139,7 @@ u_iccm_cntlr(
 
 // connect instFetch output (from pc) to ccm_controller read port
     .cntlr_rd(imem_rd),
-    .cntlr_raddr({2'b00,pc[ADDR_WIDTH-1:2]}),
+    .cntlr_raddr(imem_rd_addr),
     .cntlr_rd_data(imem_rd_data),
     .cntlr_rd_valid(imem_rd_data_valid),
 

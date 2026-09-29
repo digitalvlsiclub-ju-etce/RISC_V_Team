@@ -39,8 +39,9 @@ always @(posedge clk or negedge rst_n) begin
     mem_rd_out      <= 'b0;
     mem_rd_data_out <= 'b0;
   end
-  else if (exec_valid_in & !mem_stall) begin
-    mem_valid_out   <= 1'b1;
+  //else if (exec_valid_in & !mem_stall) begin
+  else begin
+    mem_valid_out   <= exec_valid_in & !mem_stall;
     mem_rd_out      <= exec_rd_in;
     mem_rd_data_out <= (exec_op_ld_in || exec_op_ldu_in) ? 'd0 : exec_alu_result_in; 
  end

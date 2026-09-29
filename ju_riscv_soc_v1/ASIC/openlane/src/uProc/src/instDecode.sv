@@ -54,22 +54,33 @@ module instDecode #(
     output reg                   opcode_op_lui_out
 
 );
-wire id_data_hazard_c;
+wire id_cycle_c;
 
+wire [4:0] gpr_rs1_raddr_dbg;
+wire [4:0] gpr_rs2_raddr_dbg;
 
-wire [6:0] inst_opcode_c = inst_in[6:0];
+//For visibility of raw incoming instruction
+wire [6:0] inst_opcode_dbg_c = inst_in[6:0];
 //rd is not used in case of branch and store instructions
-wire [4:0] inst_rd_c     = inst_in [11:7] & {5{~(op_br_c | op_st_c)}};
-wire [2:0] inst_func3_c  = inst_in[14:12];
-assign gpr_rs1_raddr     = inst_in [19:15];
-assign gpr_rs2_raddr     = inst_in[24:20];
-wire [6:0] inst_func7_c  = inst_in [31:25];
+wire [4:0] inst_rd_dbg_c     = inst_in [11:7];
+wire [2:0] inst_func3_dbg_c  = inst_in[14:12];
+assign gpr_rs1_raddr_dbg     = inst_in [19:15];
+assign gpr_rs2_raddr_dbg     = inst_in[24:20];
+wire [6:0] inst_func7_dbg_c  = inst_in [31:25];
+
+//Validated by inst_valid
+wire [6:0] inst_opcode_c = inst_in[6:0] & {7{inst_valid}};
+//rd is not used in case of branch and store instructions
+wire [4:0] inst_rd_c     = inst_in [11:7] & {5{~(op_br_c | op_st_c) & inst_valid}};
+wire [2:0] inst_func3_c  = inst_in[14:12] & {3{inst_valid}};
+assign gpr_rs1_raddr     = inst_in [19:15] & {5{inst_valid}};
+assign gpr_rs2_raddr     = inst_in[24:20]  & {5{inst_valid}};
+wire [6:0] inst_func7_c  = inst_in [31:25] & {7{inst_valid}};
 
 // func7 decoding
 wire func7_base_1 = (inst_func7_c == 7'b0000000);
 wire func7_base_2 = (inst_func7_c == 7'b0100000);
 wire func7_mul    = (inst_func7_c == 7'b0000001);
-
 
 wire  opcode_op_imm_c   = inst_valid & (inst_opcode_c == `OPC_OP_IMM);
 wire  opcode_op_reg_c   = inst_valid & (inst_opcode_c == `OPC_OP_REG);
@@ -80,6 +91,18 @@ wire  opcode_op_auipc_c = inst_valid & (inst_opcode_c == `OPC_OP_AUIPC);
 wire  opcode_op_lui_c   = inst_valid & (inst_opcode_c == `OPC_OP_LUI);
 wire  opcode_op_jal_c   = inst_valid & (inst_opcode_c == `OPC_OP_JAL);
 wire  opcode_op_jalr_c  = inst_valid & (inst_opcode_c == `OPC_OP_JALR);
+
+/*
+wire  opcode_op_imm_c   = id_cycle & (inst_opcode_c == `OPC_OP_IMM);
+wire  opcode_op_reg_c   = id_cycle & (inst_opcode_c == `OPC_OP_REG);
+wire  opcode_op_ld_c    = id_cycle & (inst_opcode_c == `OPC_OP_LOAD);
+wire  opcode_op_st_c    = id_cycle & (inst_opcode_c == `OPC_OP_STORE);
+wire  opcode_op_br_c    = id_cycle & (inst_opcode_c == `OPC_OP_BRANCH);
+wire  opcode_op_auipc_c = id_cycle & (inst_opcode_c == `OPC_OP_AUIPC);
+wire  opcode_op_lui_c   = id_cycle & (inst_opcode_c == `OPC_OP_LUI);
+wire  opcode_op_jal_c   = id_cycle & (inst_opcode_c == `OPC_OP_JAL);
+wire  opcode_op_jalr_c  = id_cycle & (inst_opcode_c == `OPC_OP_JALR);
+*/
 
 wire  op_jump_c = opcode_op_jal_c || opcode_op_jalr_c ;
 
@@ -277,7 +300,6 @@ always @(*) begin
 end
 
 //ID stage pipeline registers
-wire id_cycle;
 always @(posedge clk or negedge rst_n) begin
   if(~rst_n)begin
     id_valid_out         <= 'b0;
@@ -302,8 +324,10 @@ always @(posedge clk or negedge rst_n) begin
     opcode_op_auipc_out  <= 'b0;
     opcode_op_lui_out    <= 'b0;
   end
-  else if (!exec_stall && inst_valid) begin
-    id_valid_out         <= id_cycle;
+  //else if (!exec_stall && id_cycle) begin
+  //else if (!exec_stall) begin
+  else begin
+    id_valid_out         <= id_cycle_c;
     pc_out               <= pc_in;
     id_alu_operand_1_out <= id_alu_operand_1_out_c;
     id_alu_operand_2_out <= id_alu_operand_2_out_c;
@@ -328,30 +352,90 @@ always @(posedge clk or negedge rst_n) begin
 end
 
 //Data Hazard Detection
-assign id_data_hazard_c = ((inst_rd_out == gpr_rs1_raddr) | (inst_rd_out == gpr_rs2_raddr)) & (inst_rd_out != 5'b0);
-reg id_data_hazard_d0;
-reg id_data_hazard_d1;
-reg id_bubble_d0;
+wire id_data_hazard_c;
+wire id_data_hazard_extension_c;
+wire end_data_hazard_stall_c;
+wire data_hazard_stall_c;
+wire data_hazard_id_cycle_c;
+wire data_hazard_window_c;
+reg  id_data_hazard_d0;
+reg  id_data_hazard_d1;
+reg  id_data_hazard_d2;
 
-wire id_data_hazard_bubble_c = id_data_hazard_c | id_data_hazard_d0 | id_data_hazard_d1;
-wire id_hazard_bubble_c = id_data_hazard_bubble_c;
-wire id_bubble_c = id_hazard_bubble_c;
-assign id_cycle = (~id_bubble_c & id_bubble_d0) | (inst_valid & ~id_bubble_c);
+assign id_data_hazard_c = inst_valid &
+                          (((inst_rd_out == gpr_rs1_raddr) | (inst_rd_out == gpr_rs2_raddr)) & (inst_rd_out != 5'b0)) &
+                          ~id_data_hazard_extension_c;
 
 always @(posedge clk or negedge rst_n)  begin
   if(~rst_n)begin
     id_data_hazard_d0 <= 1'b0; 
-    id_data_hazard_d1 <= 1'b0; 
-    id_bubble_d0 <= 1'b0;
+    id_data_hazard_d1 <= 1'b0;
+    id_data_hazard_d2 <= 1'b0;
   end
   else begin
     id_data_hazard_d0 <= id_data_hazard_c ;
     id_data_hazard_d1 <= id_data_hazard_d0;
-    id_bubble_d0 <= id_bubble_c;
+    id_data_hazard_d2 <= id_data_hazard_d1;
+  end
+end
+assign id_data_hazard_extension_c = id_data_hazard_d0 | id_data_hazard_d1 | id_data_hazard_d2;
+
+assign data_hazard_window_c = id_data_hazard_c | id_data_hazard_extension_c;
+
+assign end_data_hazard_stall_c = id_data_hazard_d2;
+
+assign data_hazard_stall_c = (id_data_hazard_c | (id_data_hazard_extension_c & ~end_data_hazard_stall_c));
+
+assign data_hazard_id_cycle_c = id_data_hazard_d2;
+
+//Jump Hazard detection
+wire id_jump_hazard_c;
+wire id_jump_hazard_extension_c;
+wire end_jump_hazard_stall_c;
+wire jump_hazard_stall_c;
+wire jump_hazard_id_cycle_c;
+wire jump_hazard_window_c;
+reg  id_jump_hazard_d0;
+reg  id_jump_hazard_d1;
+reg  id_jump_hazard_d2;
+
+
+assign id_jump_hazard_c = inst_valid & op_jump_c & ~id_jump_hazard_extension_c;
+
+always @(posedge clk or negedge rst_n)  begin
+  if(~rst_n)begin
+    id_jump_hazard_d0 <= 1'b0; 
+    id_jump_hazard_d1 <= 1'b0;
+    id_jump_hazard_d2 <= 1'b0;
+  end
+  else begin
+    id_jump_hazard_d0 <= id_jump_hazard_c ;
+    id_jump_hazard_d1 <= id_jump_hazard_d0;
+    id_jump_hazard_d2 <= id_jump_hazard_d1;
   end
 end
 
-assign id_stall = exec_stall | id_bubble_c;
+//assign id_jump_hazard_extension_c = id_jump_hazard_d0 | id_jump_hazard_d1 | id_jump_hazard_d2;
+assign id_jump_hazard_extension_c = id_jump_hazard_d0 | id_jump_hazard_d1;
+
+assign jump_hazard_window_c = id_jump_hazard_c | id_jump_hazard_extension_c;
+
+//assign end_jump_hazard_stall_c = id_jump_hazard_d2;
+assign end_jump_hazard_stall_c = id_jump_hazard_d1;
+
+assign jump_hazard_stall_c = (id_jump_hazard_c | (id_jump_hazard_extension_c & ~end_jump_hazard_stall_c));
+
+assign jump_hazard_id_cycle_c = id_jump_hazard_c;
+
+wire id_cycle_no_hazard_c = (inst_valid & (~data_hazard_window_c & ~jump_hazard_window_c)); //id_cycle for non-hazard cases
+
+assign id_cycle_c =   id_cycle_no_hazard_c | 
+                    data_hazard_id_cycle_c |
+                    jump_hazard_id_cycle_c;
+
+
+
+assign id_stall = exec_stall | data_hazard_stall_c | jump_hazard_stall_c;
 
 
 endmodule

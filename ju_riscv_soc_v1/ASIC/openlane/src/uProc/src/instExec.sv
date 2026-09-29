@@ -199,7 +199,9 @@ always @(*) begin
 end
 
 // pc is loaded with target address under these conditions
-assign exec_load_target_addr_out = branch_true_c; //strobe for exec_target_addr_out 
+assign exec_load_target_addr_out = id_valid_in & branch_true_c; //strobe for exec_target_addr_out 
+
+wire exec_self_jump = exec_load_target_addr_out & (exec_target_addr_out == pc_in);
 
 //EX stage pipeline registers
 
@@ -215,8 +217,9 @@ always @(posedge clk or negedge rst_n ) begin
     exec_op_st_out      <= 'b0;
     exec_op_st_sz_out   <= 'b0; 
   end
-  else if (!mem_stall && id_valid_in) begin
-    exec_valid_out      <= 1'b1;
+  //else if (!mem_stall && id_valid_in) begin
+  else begin
+    exec_valid_out      <= id_valid_in;
     exec_rd_out         <= inst_rd_in;
     exec_alu_result_out <= exec_alu_result_out_c;
     exec_store_data_out <= id_store_data_in;

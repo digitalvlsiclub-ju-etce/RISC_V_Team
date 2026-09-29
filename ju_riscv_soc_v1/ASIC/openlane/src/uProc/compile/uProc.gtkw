@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Tue Sep  8 16:09:01 2026
+[*] Tue Sep 29 15:42:31 2026
 [*]
 [dumpfile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/waveforms.vcd"
-[dumpfile_mtime] "Tue Sep  8 16:04:00 2026"
-[dumpfile_size] 20627
+[dumpfile_mtime] "Tue Sep 29 15:32:33 2026"
+[dumpfile_size] 29405
 [savefile] "/Users/debu0018/Documents/Programming/Verilog/RISC_V_Team/ju_riscv_soc_v1/ASIC/openlane/src/uProc/compile/uProc.gtkw"
-[timestart] 87300
+[timestart] 141300
 [size] 1710 1073
 [pos] -1 -1
-*-14.704035 125000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+*-14.781012 175000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -39,10 +39,10 @@
 [treeopen] uProc_tb.
 [treeopen] uProc_tb.u_uProc.
 [treeopen] uProc_tb.u_uProc.u_instFetch.
-[sst_width] 255
-[signals_width] 368
+[sst_width] 277
+[signals_width] 420
 [sst_expanded] 1
-[sst_vpaned_height] 469
+[sst_vpaned_height] 395
 @28
 uProc_tb.u_uProc.u_instFetch.clk
 uProc_tb.u_uProc.u_instFetch.rst_n
@@ -52,12 +52,25 @@ uProc_tb.u_uProc.u_iccm_cntlr.cntlr_raddr[10:0]
 uProc_tb.u_uProc.u_iccm_cntlr.cntlr_rd_data[31:0]
 @28
 uProc_tb.u_uProc.u_iccm_cntlr.cntlr_rd_valid
+uProc_tb.u_uProc.u_instFetch.u_pc.clk
+uProc_tb.u_uProc.u_instFetch.u_pc.rst_n
+uProc_tb.u_uProc.u_instFetch.u_pc.pc_en
 @800200
 -instFetch
 @28
+uProc_tb.u_uProc.u_instFetch.u_pc.clk
+uProc_tb.u_uProc.u_instFetch.u_pc.rst_n
 uProc_tb.u_uProc.u_instFetch.pc_en
 @22
-uProc_tb.u_uProc.u_instFetch.u_pc.pc[10:0]
+uProc_tb.u_uProc.u_instFetch.alu_addr[10:0]
+@28
+uProc_tb.u_uProc.u_instFetch.u_pc.pc_sel[1:0]
+@22
+uProc_tb.u_uProc.u_instFetch.pc_int[10:0]
+uProc_tb.u_uProc.u_instFetch.pc[10:0]
+uProc_tb.u_uProc.u_instFetch.prev_pc[10:0]
+@200
+-
 @28
 uProc_tb.u_uProc.u_instFetch.imem_rd
 @c00022
@@ -78,9 +91,11 @@ uProc_tb.u_uProc.u_instFetch.imem_rd_addr[10:0]
 -group_end
 @28
 uProc_tb.u_uProc.u_instFetch.id_stall
-uProc_tb.u_uProc.u_instFetch.pc_run_c
 @1000200
 -instFetch
+@28
+uProc_tb.u_uProc.load_target_addr_out
+uProc_tb.u_uProc.pc_sel[1:0]
 @800200
 -decode_in
 @28
@@ -113,12 +128,33 @@ uProc_tb.u_uProc.u_instDecode.gpr_rs2_raddr[4:0]
 uProc_tb.u_uProc.u_instDecode.gpr_rs1_raddr[4:0]
 uProc_tb.u_uProc.u_instDecode.gpr_rs2_raddr[4:0]
 uProc_tb.u_uProc.u_instDecode.inst_rd_c[4:0]
+@200
+-
 @28
 uProc_tb.u_uProc.u_instDecode.id_data_hazard_c
-uProc_tb.u_uProc.u_instDecode.id_data_hazard_bubble_c
-uProc_tb.u_uProc.u_instDecode.id_bubble_c
-uProc_tb.u_uProc.u_instDecode.id_bubble_d0
-uProc_tb.u_uProc.u_instDecode.id_cycle
+uProc_tb.u_uProc.u_instDecode.id_data_hazard_extension_c
+uProc_tb.u_uProc.u_instDecode.data_hazard_window_c
+uProc_tb.u_uProc.u_instDecode.end_data_hazard_stall_c
+uProc_tb.u_uProc.u_instDecode.data_hazard_stall_c
+uProc_tb.u_uProc.u_instDecode.data_hazard_id_cycle_c
+@200
+-
+@28
+uProc_tb.u_uProc.u_instDecode.id_jump_hazard_c
+uProc_tb.u_uProc.u_instDecode.id_jump_hazard_extension_c
+uProc_tb.u_uProc.u_instDecode.jump_hazard_window_c
+uProc_tb.u_uProc.u_instDecode.end_jump_hazard_stall_c
+uProc_tb.u_uProc.u_instDecode.jump_hazard_stall_c
+uProc_tb.u_uProc.u_instDecode.jump_hazard_id_cycle_c
+@200
+-
+@28
+uProc_tb.u_uProc.u_instDecode.id_cycle_no_hazard_c
+@200
+-
+@28
+uProc_tb.u_uProc.u_instDecode.id_cycle_c
+uProc_tb.u_uProc.u_instDecode.id_stall
 uProc_tb.u_uProc.u_instDecode.func7_base_1
 uProc_tb.u_uProc.u_instDecode.func7_base_2
 uProc_tb.u_uProc.u_instDecode.func7_mul
@@ -202,8 +238,6 @@ uProc_tb.u_uProc.u_gpr.reset
 -decode_out
 @28
 uProc_tb.u_uProc.u_instDecode.id_valid_out
-@29
-uProc_tb.u_uProc.u_instDecode.id_cycle
 @22
 uProc_tb.u_uProc.u_instDecode.inst_rd_out[4:0]
 uProc_tb.u_uProc.u_instDecode.id_alu_funct_out[3:0]
@@ -291,6 +325,7 @@ uProc_tb.u_uProc.u_instExec.exec_alu_result_out_c[31:0]
 uProc_tb.u_uProc.u_instExec.temp_exec_target_addr[31:0]
 @28
 uProc_tb.u_uProc.u_instExec.branch_true_c
+uProc_tb.u_uProc.u_instExec.exec_self_jump
 @1000200
 -exec_comb
 @800200
@@ -412,7 +447,9 @@ uProc_tb.u_uProc.u_gpr.X8[31:0]
 uProc_tb.u_uProc.u_gpr.X9[31:0]
 uProc_tb.u_uProc.u_gpr.X10[31:0]
 uProc_tb.u_uProc.u_gpr.X11[31:0]
+@23
 uProc_tb.u_uProc.u_gpr.X12[31:0]
+@22
 uProc_tb.u_uProc.u_gpr.X13[31:0]
 uProc_tb.u_uProc.u_gpr.X14[31:0]
 uProc_tb.u_uProc.u_gpr.X15[31:0]
